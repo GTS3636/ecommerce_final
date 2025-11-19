@@ -3,7 +3,7 @@ const db = require('../db/conn')
 
 const Usuario = db.define('usuario',{
     codUsuario: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
         autoIncrement: true
     },

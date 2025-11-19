@@ -15,10 +15,6 @@ const Produto = db.define('produto',{
         type: DataTypes.TEXT,
         allowNull: true // Pode ser preenchida posteriormente
     },
-    modelo: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-    },
     preco: {
         type: DataTypes.DECIMAL(10,2), // Preço de venda
         allowNull: false
@@ -31,6 +27,15 @@ const Produto = db.define('produto',{
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true // Por padrão, o produto está visível para venda
+    },
+    especificacoes: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: []
+    },
+    categoria: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 },{
     timestamps: true,
