@@ -1,0 +1,101 @@
+const Produto = require('../models/Produto')
+
+const cadastrar = async (req, res) => {
+    const valores = req.body
+    
+    // Campos obrigatórios
+    const camposObrigatorios = [
+        'nome', 'preco', 'imagem_url', 'ativo', 
+        'especificacoes', 'categoria'
+    ];
+    
+    // Validação dos campos obrigatórios com a função filter
+    const camposFaltando = camposObrigatorios.filter(campo => !valores[campo])
+    
+    if (camposFaltando.length > 0) {
+        return res.status(400).json({ 
+            error: "Todos os campos são obrigatórios!",
+            camposFaltando 
+        })
+    }
+    
+    try {
+        // Criar registro de produto
+        const dados = await Produto.create(valores)
+        return res.status(201).json(dados)
+        
+    } catch (err) {
+        console.error('Erro ao cadastrar produto:', err)
+        return res.status(500).json({error: 'Erro ao cadastrar produto. Tente novamente mais tarde.'})
+    }
+}
+const listar = async (req, res) => {
+    try {
+        const dados = await Produto.findAll()
+        return res.status(201).json(dados)
+    } catch (err) {
+        console.error('Erro ao listar os produtos:', err)
+        return res.status(500).json({error: 'Erro ao listar os produtos. Tente novamente mais tarde.'})
+    }
+}
+const atualizar = async (req, res) => {
+    const valores = req.body
+    try {
+        const ProdutoExist = await Produto.findByPk(valores.codProduto)
+        if(!ProdutoExist){
+            return res.status(404).json({error: "Não foi encontrado nenhum produto com o código informado!"})
+        }
+        // Atualizar registro de Produto
+        const dados = await Produto.update(valores,{where:{codProduto:valores.codProduto}})
+        return res.status(201).json(dados)
+    } catch (err) {
+        console.error('Erro ao atualizar o produto:', err)
+        return res.status(500).json({error: 'Erro ao atualizar o produto. Tente novamente mais tarde.'})
+    }
+}
+const consultar = async (req, res) => {
+    const valores = req.body
+    
+    if(!valores.codProduto){
+        return res.status(404).json({error: "Todos os campos são obrigatórios!"})
+    }
+    
+    try {
+        const ProdutoExist = await Produto.findByPk(valores.codProduto)
+        if(!ProdutoExist){
+            return res.status(404).json({error: "Não foi encontrado nenhum produto com o código informado!"})
+        }
+        // Atualizar registro de Produto
+        const dados = await Produto.update(valores,{where:{codProduto:valores.codProduto}})
+        return res.status(201).json(dados)
+    } catch (err) {
+        console.error('Erro ao atualizar o produto:', err)
+        return res.status(500).json({error: 'Erro ao atualizar o produto. Tente novamente mais tarde.'})
+    }
+}
+const deletar = async (req,res) => {
+    const valores = req.body
+    if(
+        !valores.codProduto
+    ){
+        return res.status(403).json({error: "É preciso informar o código do produto!"})
+    }
+    try{
+        const produtoExist = await Produto.findByPk(valores.codProduto)
+        if(!produtoExist){
+            return res.status(404).json({error: "Não foi possível encontrar nenhum produto com o código inserido!"})
+        }
+        await Produto.destroy({where:{codProduto: valores.codProduto}})
+        res.status(200).json({message: "Sucesso ao deletar o produto!"})
+    }catch(err){
+        console.error('Erro ao fazer a deleção do produto: ',err)
+        res.status(500).json({error: 'Erro ao fazer a deleção do produto, tente novamente mais tarde!'})
+    }
+}
+module.exports = { 
+    cadastrar, 
+    listar, 
+    atualizar, 
+    deletar, 
+    consultar 
+}
