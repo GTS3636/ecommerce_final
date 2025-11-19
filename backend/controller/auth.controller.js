@@ -5,6 +5,10 @@ const { gerarToken } = require('../service/jwt.service')
 const login = async (req,res)=>{
     const valores = req.body
 
+    if(!valores.email || !valores.senha){
+        return res.status(403).json({error: "Todos os campos são obrigatórios!"})
+    }
+
     try{
         const usuario = await Usuario.findOne({where: { email: valores.email}})
 

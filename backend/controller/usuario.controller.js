@@ -4,17 +4,23 @@ const { validar_cpf } = require("../utils/validar_cpf")
 
 const cadastrar = async (req,res) => {
     const valores = req.body
-    if(
-        !valores.nome ||
-        !valores.email ||
-        !valores.senha ||
-        !valores.telefone ||
-        !valores.cpf ||
-        !valores.identidade ||
-        !valores.tipo_usuario
-    ){
-        return res.status(403).json({error: "Todos os campos são obrigatórios!"})
+
+    // Campos obrigatórios
+    const camposObrigatorios = [
+        'nome', 'email', 'senha', 'telefone', 
+        'cpf', 'identidade', 'tipo_usuario'
+    ];
+    
+    // Validação dos campos obrigatórios
+    const camposFaltando = camposObrigatorios.filter(campo => !valores[campo])
+    
+    if (camposFaltando.length > 0) {
+        return res.status(400).json({ 
+            error: "Todos os campos são obrigatórios!",
+            camposFaltando
+        })
     }
+
     try{
         if(!validar_cpf(valores.cpf)){
             return res.status(403).json({error: "O CPF inserido é inválido!"})
