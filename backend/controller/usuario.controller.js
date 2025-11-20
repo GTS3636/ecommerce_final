@@ -1,111 +1,84 @@
-const Usuario = require('../models/Usuario')
-const { hashSenha } = require('../service/bcrypt.service')
-const { validar_cpf } = require("../utils/validar_cpf")
+const usuarioService = require("../services/usuario.service")
 
-const cadastrar = async (req,res) => {
-    const valores = req.body
-
-    // Campos obrigatórios
-    const camposObrigatorios = [
-        'nome', 'email', 'senha', 'telefone', 
-        'cpf', 'identidade', 'tipo_usuario'
-    ];
-    
-    // Validação dos campos obrigatórios
-    const camposFaltando = camposObrigatorios.filter(campo => !valores[campo])
-    
-    if (camposFaltando.length > 0) {
-        return res.status(400).json({ 
-            error: "Todos os campos são obrigatórios!",
-            camposFaltando
-        })
+class UsuarioController {
+    async cadastrar(req,res) {
+        try {
+            const novoUsuario = await usuarioService.criarUsuario(req.body)
+            return res.status(201).json(novoUsuario)
+        } catch (error) {
+            const statusCode = error.statusCode || 500
+            return res.status(statusCode).json({
+                error: error.message,
+                ...(error.camposFaltando && { camposFaltando: error.camposFaltando }),
+                ...(error.detalhes && { detalhes: error.detalhes })
+            })
+        }
     }
 
-    try{
-        if(!validar_cpf(valores.cpf)){
-            return res.status(403).json({error: "O CPF inserido é inválido!"})
+    async consultarPorId (req, res) {
+        try {
+            const nome = req.body.nome
+            const produto = usuarioService.buscarUsuarioPorNome(nome)
+            return res.status(200).json(produto)
+        } catch (error) {
+            const statusCode = error.statusCode || 500;
+            return res.status(statusCode).json({
+                error: error.message
+            });
         }
-        valores.senha = await hashSenha(valores.senha)
-        const dados = await Usuario.create(valores)
-        res.status(201).json(dados)
-    }catch(err){
-        console.error('Erro ao receber os dados do usuário',err)
-        res.status(500).json({error: 'Erro ao receber os dados do usuário'})
+    }
+
+    async atualizar (req, res) {
+        try {
+            const valores = req.body
+            const produtoCad = usuarioService.atualizarUsuario(valores)
+            return res.status(200).json(produtoCad)
+        } catch (error) {
+            const statusCode = error.statusCode || 500;
+            return res.status(statusCode).json({
+                error: error.message,
+                ...(error.camposFaltando && { camposFaltando: error.camposFaltando }),
+                ...(error.detalhes && { detalhes: error.detalhes })
+            });
+        }
+    }
+
+    async deletar (req, res) {
+        try {
+            const codProduto = req.body.codProduto
+            await usuarioService.deletarUsuario(codProduto)
+            return res.status(200).json({message: "Sucesso ao deletar o usuário!"})
+        } catch (error) {
+            const statusCode = error.statusCode || 500;
+            return res.status(statusCode).json({
+                error: "Erro ao deletar o produto."
+            });
+        }
+    }
+
+    async listarComFiltro(req, res) {
+        try {
+            const usuarios = await usuarioService.listarFiltrado(req.query)
+            return res.status(200).json(usuarios);
+        } catch (error) {
+            const statusCode = error.statusCode || 500
+            return res.status(statusCode).json({
+                error: "Erro ao listar os usuários."
+            })
+        }
+    }
+
+    async listarUsuarios(req,res) {
+        try {
+            const usuarios = await usuarioService.listarUsuariosTodos()
+            return res.status(200).json(usuarios);
+        } catch (error) {
+            const statusCode = error.statusCode || 500
+            return res.status(statusCode).json({
+                error: "Erro ao listar os usuários."
+            })
+        }
     }
 }
-const consultar = async (req,res) => {
-    const valores = req.body
-    if(!valores.nome){
-        return res.status(403).json({error: "É preciso informar o nome do usuário!"})
-    }
-    try{
-        const usuarioExist = await Usuario.findOne({where:{nome:valores.nome}})
-        if(!usuarioExist){
-            return res.status(404).json({error: "Não foi possível encontrar nenhum usuário com o nome inserido!"})
-        }
-        res.status(201).json(usuarioExist)
-    }catch(err){
-        console.error('Erro ao fazer a atualização do usuário: ',err)
-        res.status(500).json({error: 'Erro ao fazer a atualização do usuário, tente novamente mais tarde!'})
-    }
-}
-const listar = async (req,res) => {
-    try{
-        const dados = await Usuario.findAll()
-        res.status(200).json(dados)
-    }catch(err){
-        console.error('Erro ao listar os usuários',err)
-        res.status(500).json({error: 'Erro ao listar os usuários, tente novamente mais tarde!'})
-    }
-}
-const atualizar = async (req,res) => {
-    const valores = req.body
-    if(!valores.codUsuario){
-        return res.status(403).json({error: "É preciso informar ao menos o código do usuário!"})
-    }
-    try{
-        const usuarioExist = await Usuario.findByPk(valores.codUsuario)
-        if(!usuarioExist){
-            return res.status(404).json({error: "Não foi possível encontrar nenhum usuário com o código inserido!"})
-        }
-        if(valores.cpf){
-            if(!validar_cpf(valores.cpf)){
-                return res.status(403).json({error: "O CPF inserido é inválido!"})
-            }
-        }
-        if(valores.senha){
-            valores.senha = await hashSenha(valores.senha)
-        }
-        const dados = await Usuario.update(valores, {where:{codUsuario:valores.codUsuario}})
-        res.status(201).json(dados)
-    }catch(err){
-        console.error('Erro ao fazer a atualização do usuário: ',err)
-        res.status(500).json({error: 'Erro ao fazer a atualização do usuário, tente novamente mais tarde!'})
-    }
-}
-const deletar = async (req,res) => {
-    const valores = req.body
-    if(
-        !valores.codUsuario
-    ){
-        return res.status(403).json({error: "Todos os campos são obrigatórios!"})
-    }
-    try{
-        const usuarioExist = await Usuario.findByPk(valores.codUsuario)
-        if(!usuarioExist){
-            return res.status(404).json({error: "Não foi possível encontrar nenhum usuário com o código inserido!"})
-        }
-        await Usuario.destroy({where:{codUsuario: valores.codUsuario}})
-        res.status(200).json({message: "Sucesso ao deletar o usuário!"})
-    }catch(err){
-        console.error('Erro ao fazer a atualização do usuário: ',err)
-        res.status(500).json({error: 'Erro ao fazer a atualização do usuário, tente novamente mais tarde!'})
-    }
-}
-module.exports = { 
-    cadastrar, 
-    listar, 
-    atualizar, 
-    deletar, 
-    consultar 
-}
+
+module.exports = new UsuarioController()
