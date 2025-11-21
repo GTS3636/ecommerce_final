@@ -47,7 +47,7 @@ class ProdutoController {
 
     async consultarPorId (req, res) {
         try {
-            const codProduto = req.body.codProduto
+            const codProduto = req.params.id
             const produto = produtoService.buscarProdutoPorId(codProduto)
             return res.status(200).json(produto)
         } catch (error) {
@@ -87,6 +87,10 @@ class ProdutoController {
     }
 
     async listarComFiltro(req, res) {
+        // Verificação para presença de chaves
+        if (Object.keys(req.query).length === 0) {
+            return this.listarProdutos(req, res)
+        }
         try {
             const produtos = await produtoService.listarProdutosFiltro(req.query)
             return res.status(200).json(produtos)

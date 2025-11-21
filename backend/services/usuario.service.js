@@ -1,5 +1,5 @@
 const Usuario = require('../models/Usuario')
-const BaseService = require('./base.service');
+const BaseService = require('./base.service')
 const { validaEmail, validaTelefone, validaCPF } = require('../utils/validacao')
 const { hashSenha } = require('../utils/criptografia')
 
@@ -11,31 +11,31 @@ class UsuarioService extends BaseService {
         // Campos obrigatórios
         const camposObrigatorios = [
             'nome', 'email', 'senha', 'telefone', 
-            'cpf', 'identidade', 'tipo_usuario'
+            'cpf', 'tipo_usuario'
         ];
 
-        this.validarCamposObrigatorios(dados, camposObrigatorios)
+        await this.validarCamposObrigatorios(dados, camposObrigatorios)
 
         if (!validaEmail(email)) {
-            throw new Error('Email inválido')
+            return new Error('Email inválido')
         }
 
         if (!validaTelefone(telefone)) {
-            throw new Error('Telefone inválido')
+            return new Error('Telefone inválido')
         }
 
         if (!validaCPF(cpf)) {
-            throw new Error('CPF inválido')
+            return new Error('CPF inválido')
         }
 
         const usuarioEmail = await Usuario.findOne({ where: { email } })
         if (usuarioEmail) {
-            throw new Error('Email já está cadastrado')
+            return new Error('Email já está cadastrado')
         }
 
         const usuarioCPF = await Usuario.findOne({ where: { cpf } })
         if (usuarioCPF) {
-            throw new Error('CPF já está cadastrado')
+            return new Error('CPF já está cadastrado')
         }
 
         // -------- criptografar senha --------
@@ -51,24 +51,21 @@ class UsuarioService extends BaseService {
             senha: senhaBcrypt,
             tipo_usuario
         }
-        const novoUsuario = this.cadastrar(Usuario, valores)
+        const novoUsuario = await this.cadastrar(Usuario, valores)
 
         return novoUsuario
     }
     async listarUsuariosTodos() {
-        return this.listarTodos(Usuario)
+        return await this.listarTodos(Usuario)
     }
-    async lisatrUsuariosFiltro(filtros = {}) {
-        return this.listarFiltrado(Usuario, filtros)
-    }
-    async buscarUsuarioPorNome(nome) {
-        return await this.buscarPorId(Usuario, nome)
+    async listarUsuariosFiltro(filtros = {}) {
+        return await this.listarFiltrado(Usuario, filtros)
     }
     async atualizarUsuario(dados) {
         return await this.atualizar(Usuario, dados.codUsuario, dados, "Usuário")
     }
-    async deletarUsuario(dados) {
-        return await this.deletar(Usuario, dados.codUsuario, "Usuário")
+    async deletarUsuario(codUsuario) {
+        return await this.deletar(Usuario, codUsuario, "Usuário")
     }
 }
 

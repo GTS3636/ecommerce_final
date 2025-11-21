@@ -15,24 +15,11 @@ class UsuarioController {
         }
     }
 
-    async consultarPorId (req, res) {
-        try {
-            const nome = req.body.nome
-            const produto = usuarioService.buscarUsuarioPorNome(nome)
-            return res.status(200).json(produto)
-        } catch (error) {
-            const statusCode = error.statusCode || 500;
-            return res.status(statusCode).json({
-                error: error.message
-            });
-        }
-    }
-
     async atualizar (req, res) {
         try {
             const valores = req.body
-            const produtoCad = usuarioService.atualizarUsuario(valores)
-            return res.status(200).json(produtoCad)
+            const usuarioAtual = await usuarioService.atualizarUsuario(valores)
+            return res.status(200).json(usuarioAtual)
         } catch (error) {
             const statusCode = error.statusCode || 500;
             return res.status(statusCode).json({
@@ -45,26 +32,14 @@ class UsuarioController {
 
     async deletar (req, res) {
         try {
-            const codProduto = req.body.codProduto
-            await usuarioService.deletarUsuario(codProduto)
+            const codUsuario = req.params.id
+            await usuarioService.deletarUsuario(codUsuario)
             return res.status(200).json({message: "Sucesso ao deletar o usuário!"})
         } catch (error) {
             const statusCode = error.statusCode || 500;
             return res.status(statusCode).json({
-                error: "Erro ao deletar o produto."
+                error: "Erro ao deletar o usuário."
             });
-        }
-    }
-
-    async listarComFiltro(req, res) {
-        try {
-            const usuarios = await usuarioService.listarFiltrado(req.query)
-            return res.status(200).json(usuarios);
-        } catch (error) {
-            const statusCode = error.statusCode || 500
-            return res.status(statusCode).json({
-                error: "Erro ao listar os usuários."
-            })
         }
     }
 
@@ -76,6 +51,21 @@ class UsuarioController {
             const statusCode = error.statusCode || 500
             return res.status(statusCode).json({
                 error: "Erro ao listar os usuários."
+            })
+        }
+    }
+
+    // Funcionando
+    async listarComFiltro(req, res) {
+        try {
+            const usuarios = await usuarioService.listarUsuariosFiltro(req.query)
+            return res.status(200).json(usuarios);
+        } catch (error) {
+            console.error("Erro ao listar usuários:", error)
+            const statusCode = error.statusCode || 500
+            return res.status(statusCode).json({
+                error: "Erro ao listar os usuários.",
+                detalhes: error.message
             })
         }
     }

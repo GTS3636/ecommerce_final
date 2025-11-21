@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 class BaseService {
     // Validar campos obrigatórios
     validarCamposObrigatorios(dados, camposObrigatorios) {
@@ -11,7 +12,7 @@ class BaseService {
             const erro = new Error('Campos obrigatórios faltando.')
             erro.statusCode = 400
             erro.camposFaltando = camposFaltando
-            throw erro
+            return erro
         }
     }
     
@@ -20,45 +21,31 @@ class BaseService {
         if (typeof valor !== 'number' || valor <= 0) {
             const erro = new Error(`${nomeCampo} deve ser um número maior que zero.`)
             erro.statusCode = 400
-            throw erro
+            return erro
         }
     }
     
     // Listar com filtros opcionais
     async listarFiltrado(Classe, filtros = {}) {
-        return await Classe.findAll({ where: filtros })
+        console.log("Filtro: ", filtros)
+        // Extração das chaves e valores para pesquisa mais dinâmica
+        // filtros vem como objeto, por isso podemos usar as duas funções abaixo
+        const valorFiltro = Object.values(filtros)
+        const headFiltro = Object.keys(filtros)
+
+        let search = {}
+        // Construindo o objeto dinamicamente
+        headFiltro.forEach((head, index) => {
+            search[head] = {
+                [Op.like]: `%${valorFiltro[index]}%`
+            }
+        })
+        return await Classe.findAll({ where: search })
     }
     
     // Listar todos sem filtros
     async listarTodos(Classe) {
         return await Classe.findAll()
-    }
-    
-    // Buscar por ID com tratamento de erro
-    async buscarPorId(Classe, id, nomeEntidade = 'Registro') {
-        const registro = await Classe.findByPk(id)
-        
-        if (!registro) {
-            const erro = new Error(`${nomeEntidade} não encontrado.`)
-            erro.statusCode = 404
-            throw erro
-        }
-        
-        return registro
-    }
-
-    async buscarPorFiltro(Classe, filtro, nomeEntidade = 'Registro') {
-        // A variável filtro é esperada já em formato JSON com chave valor
-        // Ex: {email: "ex@email.com"}
-        const registro = await Classe.findOne({where:filtro})
-        
-        if (!registro) {
-            const erro = new Error(`${nomeEntidade} não encontrado.`)
-            erro.statusCode = 404
-            throw erro
-        }
-        
-        return registro
     }
     
     // Criar registro com validação do Sequelize
@@ -72,16 +59,33 @@ class BaseService {
                 const erro = new Error('Erro de validação')
                 erro.statusCode = 400;
                 erro.detalhes = error.errors.map(e => e.message)
-                throw erro
+                return erro
             }
-            throw error
+        }
+    }
+
+    async buscarPorId(Classe, id, nomeEntidade = 'Registro') {
+        try {
+            const registro = await Classe.findByPk(id)
+
+            if (!registro) {
+                const erro = new Error(`${nomeEntidade} não encontrado`)
+                erro.statusCode = 404
+                return erro
+            }
+
+            return registro
+        } catch (error) {
+            const erro = new Error('Erro de validação')
+            erro.statusCode = 400
+            erro.detalhes = error.errors.map(e => e.message)
+            return erro
         }
     }
     
     // Atualizar registro
     async atualizar(Classe, id, dados, nomeEntidade = 'Registro') {
         const registro = await this.buscarPorId(Classe, id, nomeEntidade)
-        
         try {
             await registro.update(dados)
             return registro
@@ -90,9 +94,8 @@ class BaseService {
                 const erro = new Error('Erro de validação')
                 erro.statusCode = 400
                 erro.detalhes = error.errors.map(e => e.message)
-                throw erro
+                return erro
             }
-            throw error
         }
     }
     
