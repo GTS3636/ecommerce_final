@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize')
-require('dotenv').config()
+require('dotenv').config({path: "../.env"})
 
 // lógica: se existir uma DATABASE_URL (mysql://user:pass@host:port/dbname) usa ela.
 // Senão tenta variáveis separadas (DB_NAME, DB_USER, DB_PASS, DB_HOST, DB_PORT).
