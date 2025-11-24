@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize')
-const db = require('../db/conn')
+const db = require('../db/conn_local')
 
 const Usuario = db.define('usuario',{
     codUsuario: {
