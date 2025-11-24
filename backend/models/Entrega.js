@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize')
-const db = require('../db/conn_online') 
+const db = require('../db/conn') 
 
 const Entrega = db.define('entrega',{
     codEntrega: {
