@@ -14,7 +14,7 @@ const authRoutes = require('../routes/auth.routes')
 const produtoRoutes = require('../routes/produto.routes')
 
 app.use('/usuario', usuarioRoutes)
-app.use('/', authRoutes)
+app.use('/login', authRoutes)
 app.use('/produto', produtoRoutes)
 
 

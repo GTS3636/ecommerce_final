@@ -5,7 +5,7 @@ const cadastrar = async (req, res) => {
     
     // Campos obrigatórios
     const camposObrigatorios = [
-        'nome', 'preco', 'imagem_url', 'ativo', 
+        'nome', 'preco', 'ativo', 
         'especificacoes', 'categoria'
     ];
     
@@ -41,36 +41,36 @@ const listar = async (req, res) => {
 const atualizar = async (req, res) => {
     const valores = req.body
     try {
-        const ProdutoExist = await Produto.findByPk(valores.codProduto)
+        let ProdutoExist = await Produto.findByPk(valores.codProduto)
         if(!ProdutoExist){
             return res.status(404).json({error: "Não foi encontrado nenhum produto com o código informado!"})
         }
         // Atualizar registro de Produto
-        const dados = await Produto.update(valores,{where:{codProduto:valores.codProduto}})
-        return res.status(201).json(dados)
+        await Produto.update(valores,{where:{codProduto:valores.codProduto}})
+        ProdutoExist = await Produto.findByPk(valores.codProduto)
+        return res.status(201).json(ProdutoExist)
     } catch (err) {
         console.error('Erro ao atualizar o produto:', err)
         return res.status(500).json({error: 'Erro ao atualizar o produto. Tente novamente mais tarde.'})
     }
 }
 const consultar = async (req, res) => {
-    const valores = req.body
+    const codProduto = req.params.id
     
-    if(!valores.codProduto){
+    if(!codProduto){
         return res.status(404).json({error: "Todos os campos são obrigatórios!"})
     }
     
     try {
-        const ProdutoExist = await Produto.findByPk(valores.codProduto)
+        const ProdutoExist = await Produto.findByPk(codProduto)
         if(!ProdutoExist){
             return res.status(404).json({error: "Não foi encontrado nenhum produto com o código informado!"})
         }
         // Atualizar registro de Produto
-        const dados = await Produto.update(valores,{where:{codProduto:valores.codProduto}})
-        return res.status(201).json(dados)
+        return res.status(201).json(ProdutoExist)
     } catch (err) {
-        console.error('Erro ao atualizar o produto:', err)
-        return res.status(500).json({error: 'Erro ao atualizar o produto. Tente novamente mais tarde.'})
+        console.error('Erro ao consultar o produto:', err)
+        return res.status(500).json({error: 'Erro ao consultar o produto. Tente novamente mais tarde.'})
     }
 }
 const deletar = async (req,res) => {

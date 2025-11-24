@@ -1,6 +1,6 @@
 const Usuario = require('../models/Usuario')
 const { hashSenha } = require('../utils/criptografia')
-const { validar_cpf } = require("../utils/validaCPF")
+const { validaCPF } = require("../utils/validaCPF")
 
 const cadastrar = async (req,res) => {
     const valores = req.body
@@ -8,7 +8,7 @@ const cadastrar = async (req,res) => {
     // Campos obrigatórios
     const camposObrigatorios = [
         'nome', 'email', 'senha', 'telefone', 
-        'cpf', 'identidade', 'tipo_usuario'
+        'cpf', 'tipo_usuario'
     ];
     
     // Validação dos campos obrigatórios
@@ -22,7 +22,7 @@ const cadastrar = async (req,res) => {
     }
 
     try{
-        if(!validar_cpf(valores.cpf)){
+        if(!validaCPF(valores.cpf)){
             return res.status(403).json({error: "O CPF inserido é inválido!"})
         }
         valores.senha = await hashSenha(valores.senha)
@@ -34,12 +34,12 @@ const cadastrar = async (req,res) => {
     }
 }
 const consultar = async (req,res) => {
-    const valores = req.body
-    if(!valores.nome){
+    const nome = req.params.nome
+    if(!nome){
         return res.status(403).json({error: "É preciso informar o nome do usuário!"})
     }
     try{
-        const usuarioExist = await Usuario.findOne({where:{nome:valores.nome}})
+        const usuarioExist = await Usuario.findOne({where:{nome:nome}})
         if(!usuarioExist){
             return res.status(404).json({error: "Não foi possível encontrar nenhum usuário com o nome inserido!"})
         }
@@ -64,20 +64,21 @@ const atualizar = async (req,res) => {
         return res.status(403).json({error: "É preciso informar ao menos o código do usuário!"})
     }
     try{
-        const usuarioExist = await Usuario.findByPk(valores.codUsuario)
+        let usuarioExist = await Usuario.findByPk(valores.codUsuario)
         if(!usuarioExist){
             return res.status(404).json({error: "Não foi possível encontrar nenhum usuário com o código inserido!"})
         }
         if(valores.cpf){
-            if(!validar_cpf(valores.cpf)){
+            if(!validaCPF(valores.cpf)){
                 return res.status(403).json({error: "O CPF inserido é inválido!"})
             }
         }
         if(valores.senha){
             valores.senha = await hashSenha(valores.senha)
         }
-        const dados = await Usuario.update(valores, {where:{codUsuario:valores.codUsuario}})
-        res.status(201).json(dados)
+        await Usuario.update(valores, {where:{codUsuario:valores.codUsuario}})
+        usuarioExist = await Usuario.findByPk(valores.codUsuario)
+        res.status(201).json(usuarioExist)
     }catch(err){
         console.error('Erro ao fazer a atualização do usuário: ',err)
         res.status(500).json({error: 'Erro ao fazer a atualização do usuário, tente novamente mais tarde!'})
