@@ -7,7 +7,7 @@ async function hashSenha(senha) {
 }
 
 async function compareSenha(senha,hash) {
-    return  await bcrypt.compare(senha,hash)
+    return await bcrypt.compare(senha,hash)
 }
 
 module.exports = { hashSenha, compareSenha }

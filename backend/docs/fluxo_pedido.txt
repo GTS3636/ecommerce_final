@@ -1,0 +1,3 @@
+Para que um pedido seja cadastrado:
+
+- criar um pedido 
