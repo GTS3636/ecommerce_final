@@ -1,4 +1,4 @@
-const conn = require('./db/conn_local.js') 
+const conn = require('./db/conn.js') 
 
 const { 
     Usuario, 
