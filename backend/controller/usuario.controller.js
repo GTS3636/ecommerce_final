@@ -1,6 +1,6 @@
 const Usuario = require('../models/Usuario')
 const { hashSenha } = require('../utils/criptografia')
-const { validar_cpf } = require("../utils/validar_cpf")
+const { validar_cpf } = require("../utils/validaCPF")
 
 const cadastrar = async (req,res) => {
     const valores = req.body
