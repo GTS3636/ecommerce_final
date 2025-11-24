@@ -31,7 +31,7 @@ const Produto = db.define('produto',{
     especificacoes: {
         type: DataTypes.JSON,
         allowNull: false,
-        defaultValue: []
+        defaultValue: {}
     },
     categoria: {
         type: DataTypes.STRING,
