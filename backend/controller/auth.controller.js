@@ -1,27 +1,37 @@
-const authService = require('../services/auth.service')
+const Usuario = require('../model/Usuario')
+const { compareSenha } = require('../utils/criptografia')
+const { gerarToken } = require('../utils/tokenJWT')
 
-class AuthController {
-    async login(req, res) {
-        try {
-            const { email, senha } = req.body
+const login = async (req,res)=>{
+    const valores = req.body
 
-            // chama o service
-            const resultado = await authService.login({ email, senha })
+    if(!valores.email || !valores.senha){
+        return res.status(403).json({error: "Todos os campos são obrigatórios!"})
+    }
 
-            return res.status(200).json({
-                mensagem: 'Login realizado com sucesso!',
-                ...resultado
-            })
+    try{
+        const usuario = await Usuario.findOne({where: { email: valores.email}})
 
-        } catch (err) {
-            console.error('Erro no controller de login: ', err.message)
-
-            return res.status(500).json({
-                mensagem: err.message || 'Erro ao realizar login!'
-            })
+        if(!usuario){
+            return res.status(404).json({error: "Usuario não encontrado!"})
         }
 
+        const senhaValida = await compareSenha(valores.senha, usuario.senha)
+
+        if(!senhaValida){
+            return res.status(401).json({error: "Senha inválida!"})
+        }
+
+        const token = gerarToken({
+            codUsuario: usuario.codUsuario,
+            email: usuario.email
+        })
+
+        res.status(200).json({message: "Login realizado com sucesso!", token})
+
+    }catch(err){
+        res.status(500).json({error: "Erro ao realizar o login!"})
     }
 }
 
-module.exports = new AuthController()
+module.exports = { login }
