@@ -11,8 +11,8 @@ const isOnIndexPage = location.pathname.endsWith("/index.html")
 const isOnCarrinhoPage = location.pathname.endsWith("/carrinho.html")
 const isOnSearchPage = location.pathname.endsWith("/search.html")
 
-const isOnPublicPage  = isOnCarrinhoPage || isOnIndexPage || isOnSearchPage
 const isOnAuthPage = isOnLoginPage || isOnRegisterPage
+const isOnPublicPage  = isOnCarrinhoPage || isOnIndexPage || isOnSearchPage || isOnAuthPage
 
 if(!token && !isOnPublicPage ){
     location.href = loginPath
@@ -43,20 +43,29 @@ if (isOnIndexPage && tipoUsuario === "ADMIN") {
     }
 }
 if (token && !isOnAuthPage){
+    setupNome()
+    setupLogout()
+}
+
+function setupLogout() {
+    const logout = document.getElementById("logout")
+    if (logout){
+        logout.addEventListener("click", (e)=>{
+            e.preventDefault()
+            let confirmLogout = confirm("Você tem certeza que deseja fazer logout?")
+            if (confirmLogout){
+                localStorage.clear()
+                location.href = loginPath
+            }
+        })
+    }
+}
+
+function setupNome() {
     const nomeP = document.getElementById("nomeP")
     const nomeUser = localStorage.getItem("nomeUser")
 
     if(nomeP && nomeUser){
-        nomeP.innerText = nomeUser
+        nomeP.textContent = nomeUser
     }
-
-    const logout = document.getElementById("logout")
-    logout.addEventListener("click", (e)=>{
-        e.preventDefault()
-        let confirmLogout = confirm("Você tem certeza que deseja fazer logout?")
-        if (confirmLogout){
-            localStorage.clear()
-            location.href = loginPath
-        }
-    })
 }
