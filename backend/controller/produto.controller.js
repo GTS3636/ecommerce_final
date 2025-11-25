@@ -1,60 +1,33 @@
-// Importa o service que contém a lógica de negócio
 const produtoService = require('../services/produto.service');
-
-// Define a classe do Controller
-// Controllers são responsáveis por receber requisições HTTP e retornar respostas
 class ProdutoController {
-    
-    // Método assíncrono para criar um produto
-    // Recebe os objetos req (requisição) e res (resposta) do Express
     async cadastrar(req, res) {
-        
-        // Bloco try-catch para capturar erros
         try {
-            // Chama o método criarProduto do service
-            // req.body contém os dados enviados no corpo da requisição
-            // O service faz toda a validação e criação no banco
-            const novoProduto = await produtoService.criarProduto(req.body);
+            const novoProduto = await produtoService.criarProduto(req.body)
+            return res.status(201).json(novoProduto)
+        } catch (err) {
+            console.error("Erro ao cadastrar o produto: ", err);
             
-            // Se deu tudo certo, retorna status 201 (Created)
-            // e envia o produto criado como JSON
-            return res.status(201).json(novoProduto);
-            
-        } catch (error) {
-            // Se algum erro foi lançado pelo service, cai aqui
-            
-            // Pega o statusCode do erro (se existir) ou usa 500 como padrão
-            // 400 = erro do cliente (validação)
-            // 500 = erro do servidor (problema interno)
-            const statusCode = error.statusCode || 500
-            
-            // Retorna a resposta de erro com o status apropriado
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                // Sempre inclui a mensagem de erro
-                error: error.message,
-                
-                // Operador spread (...) com condição:
-                // Se error.camposFaltando existir, adiciona ao objeto
-                // Isso mostra quais campos obrigatórios faltaram
-                ...(error.camposFaltando && { camposFaltando: error.camposFaltando }),
-                
-                // Se error.detalhes existir, adiciona ao objeto
-                // Isso mostra detalhes de erros de validação do Sequelize
-                ...(error.detalhes && { detalhes: error.detalhes })
-            });
+                error: "Erro ao cadastrar o produto, tente novamente mais tarde."
+            })
         }
     }
 
     async consultarPorId (req, res) {
         try {
             const codProduto = req.params.id
+            if(!codProduto){
+                return res.status(400).json({error: "É necessário informar o ID do produto para consulta!"})
+            }
             const produto = produtoService.buscarProdutoPorId(codProduto)
             return res.status(200).json(produto)
-        } catch (error) {
-            const statusCode = error.statusCode || 500;
+        } catch (err) {
+            console.error("Erro ao consultar o produto por ID: ", err)
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                error: error.message
-            });
+                error: "Erro ao consultar o produto por ID, tente novamente mais tarde."
+            })
         }
     }
 
@@ -63,13 +36,12 @@ class ProdutoController {
             const valores = req.body
             const produtoCad = produtoService.atualizarProduto(valores)
             return res.status(200).json(produtoCad)
-        } catch (error) {
-            const statusCode = error.statusCode || 500;
+        } catch (err) {
+            console.error("Erro ao atualizar o produto: ",err)
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                error: error.message,
-                ...(error.camposFaltando && { camposFaltando: error.camposFaltando }),
-                ...(error.detalhes && { detalhes: error.detalhes })
-            });
+                error: "Erro ao atualizar o produto, tente novamente mais tarde."
+            })
         }
     }
 
@@ -78,11 +50,12 @@ class ProdutoController {
             const codProduto = req.body.codProduto
             await produtoService.deletarProduto(codProduto)
             return res.status(200).json({message: "Sucesso ao deletar o produto!"})
-        } catch (error) {
-            const statusCode = error.statusCode || 500;
+        } catch (err) {
+            console.error("Erro ao deletar o produto: ", err)
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                error: "Erro ao deletar o produto."
-            });
+                error: "Erro ao deletar o produto, tente novamente mais tarde."
+            })
         }
     }
 
@@ -94,10 +67,11 @@ class ProdutoController {
         try {
             const produtos = await produtoService.listarProdutosFiltro(req.query)
             return res.status(200).json(produtos)
-        } catch (error) {
-            const statusCode = error.statusCode || 500
+        } catch (err) {
+            console.error("Erro ao listar os produtos com filtro: ", err)
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                error: "Erro ao listar os produtos."
+                error: "Erro ao listar os produtos com filtro, tente novamente mais tarde."
             })
         }
     }
@@ -105,12 +79,13 @@ class ProdutoController {
     async listarProdutos(req,res) {
         try {
             const produtos = await produtoService.listarProdutosTodos()
-            return res.status(200).json(produtos);
-        } catch (error) {
-            const statusCode = error.statusCode || 500;
+            return res.status(200).json(produtos)
+        } catch (err) {
+            console.error("Erro ao listar os produtos: ", err);
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                error: "Erro ao listar os produtos."
-            });
+                error: "Erro ao listar os produtos, tente novamente mais tarde."
+            })
         }
     }
 }

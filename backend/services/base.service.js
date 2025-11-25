@@ -1,4 +1,5 @@
-const { Op } = require("sequelize")
+const { Op } = require("sequelize");
+const { IGNORE } = require("sequelize/lib/index-hints");
 class BaseService {
     // Validar campos obrigatórios
     validarCamposObrigatorios(dados, camposObrigatorios) {
@@ -12,6 +13,7 @@ class BaseService {
             const erro = new Error('Campos obrigatórios faltando.')
             erro.statusCode = 400
             erro.camposFaltando = camposFaltando
+            console.error("Erro: ",erro)
             return erro
         }
     }
@@ -27,20 +29,31 @@ class BaseService {
     
     // Listar com filtros opcionais
     async listarFiltrado(Classe, filtros = {}) {
-        console.log("Filtro: ", filtros)
-        // Extração das chaves e valores para pesquisa mais dinâmica
-        // filtros vem como objeto, por isso podemos usar as duas funções abaixo
-        const valorFiltro = Object.values(filtros)
-        const headFiltro = Object.keys(filtros)
+        try {
+            // Extração das chaves e valores para pesquisa mais dinâmica
+            // filtros vem como objeto, por isso podemos usar as duas funções abaixo
+            const valorFiltro = Object.values(filtros)
+            const headFiltro = Object.keys(filtros)
 
-        let search = {}
-        // Construindo o objeto dinamicamente
-        headFiltro.forEach((head, index) => {
-            search[head] = {
-                [Op.like]: `%${valorFiltro[index]}%`
+            let search = {}
+            // Construindo o objeto dinamicamente
+            headFiltro.forEach((head, index) => {
+                search[head] = {
+                    [Op.like]: `%${valorFiltro[index]}%`
+                }
+            })
+            return await Classe.findAll({ where: search })
+        } catch (error) {
+            if (error.name === 'SequelizeValidationError') {
+                const erro = new Error('Erro de validação')
+                erro.statusCode = 400;
+                erro.detalhes = error.errors.map(e => e.message)
+                console.error("Erro: ",erro)
+                return erro
             }
-        })
-        return await Classe.findAll({ where: search })
+            console.error("Erro geral: ",error)
+            return error
+        }
     }
     
     // Listar todos sem filtros
@@ -59,8 +72,11 @@ class BaseService {
                 const erro = new Error('Erro de validação')
                 erro.statusCode = 400;
                 erro.detalhes = error.errors.map(e => e.message)
+                console.error("Erro: ",erro)
                 return erro
             }
+            console.error("Erro geral: ",error)
+            return error
         }
     }
 
@@ -71,21 +87,23 @@ class BaseService {
             if (!registro) {
                 const erro = new Error(`${nomeEntidade} não encontrado`)
                 erro.statusCode = 404
+                console.error(erro)
                 return erro
             }
 
             return registro
         } catch (error) {
-            const erro = new Error('Erro de validação')
-            erro.statusCode = 400
-            erro.detalhes = error.errors.map(e => e.message)
-            return erro
+            console.error("Erro ao buscar por ID: ",error)
+            return error
         }
     }
     
     // Atualizar registro
     async atualizar(Classe, id, dados, nomeEntidade = 'Registro') {
         const registro = await this.buscarPorId(Classe, id, nomeEntidade)
+        if(!registro){
+            return new Error("Não foi possível encontrar o registro pelo ID!")
+        }
         try {
             await registro.update(dados)
             return registro
@@ -93,17 +111,30 @@ class BaseService {
             if (error.name === 'SequelizeValidationError') {
                 const erro = new Error('Erro de validação')
                 erro.statusCode = 400
-                erro.detalhes = error.errors.map(e => e.message)
+                console.error(erro)
                 return erro
             }
+            console.error(error)
+            return error
         }
     }
     
     // Deletar registro
     async deletar(Classe, id, nomeEntidade = 'Registro') {
-        const registro = await this.buscarPorId(Classe, id, nomeEntidade)
-        await registro.destroy()
-        return { mensagem: `${nomeEntidade} deletado com sucesso!` }
+        try {
+            const registro = await this.buscarPorId(Classe, id, nomeEntidade)
+            await registro.destroy()
+            return { mensagem: `${nomeEntidade} deletado com sucesso!` }
+        } catch (error) {
+            if (error.name === 'SequelizeValidationError') {
+                const erro = new Error('Erro de validação')
+                erro.statusCode = 400
+                console.error(erro)
+                return erro
+            }
+            console.error(error)
+            return error
+        }
     }
 }
 

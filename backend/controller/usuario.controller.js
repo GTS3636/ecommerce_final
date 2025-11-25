@@ -4,13 +4,16 @@ class UsuarioController {
     async cadastrar(req,res) {
         try {
             const novoUsuario = await usuarioService.criarUsuario(req.body)
+            console.log(novoUsuario)
+            if(!novoUsuario) {
+                return res.status(500).json({error: "Ocorreu um erro ao cadastrar o usuário!"})
+            }
             return res.status(201).json(novoUsuario)
-        } catch (error) {
-            const statusCode = error.statusCode || 500
+        } catch (err) {
+            console.error("Erro ao cadastrar o usuário: ", err)
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                error: error.message,
-                ...(error.camposFaltando && { camposFaltando: error.camposFaltando }),
-                ...(error.detalhes && { detalhes: error.detalhes })
+                error: "Erro ao cadastrar o usuário: ", err
             })
         }
     }
@@ -18,15 +21,17 @@ class UsuarioController {
     async atualizar (req, res) {
         try {
             const valores = req.body
+            if(!valores.codUsuario){
+                return res.status(400).json({error: "É necessário informar o código do usuário!"})
+            }
             const usuarioAtual = await usuarioService.atualizarUsuario(valores)
             return res.status(200).json(usuarioAtual)
-        } catch (error) {
-            const statusCode = error.statusCode || 500;
+        } catch (err) {
+            console.error("Erro ao atualizar o usuário: ", err)
+            const statusCode = err.statusCode || 500;
             return res.status(statusCode).json({
-                error: error.message,
-                ...(error.camposFaltando && { camposFaltando: error.camposFaltando }),
-                ...(error.detalhes && { detalhes: error.detalhes })
-            });
+                error: "Erro ao atualizar o usuário: ", err
+            })
         }
     }
 
@@ -35,10 +40,11 @@ class UsuarioController {
             const codUsuario = req.params.id
             await usuarioService.deletarUsuario(codUsuario)
             return res.status(200).json({message: "Sucesso ao deletar o usuário!"})
-        } catch (error) {
-            const statusCode = error.statusCode || 500;
+        } catch (err) {
+            console.error("Erro ao deletar o usuário: ", err)
+            const statusCode = err.statusCode || 500;
             return res.status(statusCode).json({
-                error: "Erro ao deletar o usuário."
+                error: "Erro ao deletar o usuário: ", err
             });
         }
     }
@@ -47,10 +53,12 @@ class UsuarioController {
         try {
             const usuarios = await usuarioService.listarUsuariosTodos()
             return res.status(200).json(usuarios);
-        } catch (error) {
-            const statusCode = error.statusCode || 500
+        } catch (err) {
+            console.error("Erro ao listar os usuários: ", err)
+            
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                error: "Erro ao listar os usuários."
+                error: "Erro ao listar os usuários: ", err
             })
         }
     }
@@ -60,12 +68,11 @@ class UsuarioController {
         try {
             const usuarios = await usuarioService.listarUsuariosFiltro(req.query)
             return res.status(200).json(usuarios);
-        } catch (error) {
-            console.error("Erro ao listar usuários:", error)
-            const statusCode = error.statusCode || 500
+        } catch (err) {
+            console.error("Erro ao listar usuários com filtro:", err)
+            const statusCode = err.statusCode || 500
             return res.status(statusCode).json({
-                error: "Erro ao listar os usuários.",
-                detalhes: error.message
+                error: "Erro ao listar os usuários dom filtro: ",err
             })
         }
     }

@@ -14,10 +14,10 @@ class UsuarioService extends BaseService {
             'cpf', 'tipo_usuario'
         ];
 
-        await this.validarCamposObrigatorios(dados, camposObrigatorios)
+        this.validarCamposObrigatorios(dados, camposObrigatorios)
 
         if (!validaEmail(email)) {
-            return new Error('Email inválido')
+            return new Error('Email inválido!')
         }
 
         if (!validaTelefone(telefone)) {

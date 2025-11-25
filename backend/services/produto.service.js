@@ -29,12 +29,18 @@ class ProdutoService extends BaseService {
         return await this.buscarPorId(Produto, id, 'Produto')
     }
     
-    async atualizarProduto(id, dados) {
+    async atualizarProduto(dados) {
+        console.log("Atualizar produto dados: ",dados)
+        
         // Validações se necessário
         if (dados.preco !== undefined || dados.preco !== null) {
             this.validarNumeroPositivo(dados.preco, 'Preço')
         }
-        return await this.atualizar(Produto, id, dados, 'Produto')
+        const produtoAtual = await this.atualizar(Produto, dados.codProduto, dados, 'Produto')
+        if(!produtoAtual){
+            return new Error("Ocorreu um erro ao atualizar o produto!")
+        }
+        return produtoAtual
     }
     
     async deletarProduto(id) {

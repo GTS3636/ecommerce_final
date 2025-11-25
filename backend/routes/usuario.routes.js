@@ -11,7 +11,7 @@ router.get("/listar", usuarioController.listarUsuarios)
 router.get("/filtro", usuarioController.listarComFiltro)
 // Finalizado
 router.put("/atualizar", usuarioController.atualizar)
-// 
+// Finalizado
 router.delete("/deletar/:id", usuarioController.deletar)
 
 module.exports = router
