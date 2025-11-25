@@ -1,0 +1,44 @@
+// Utilitário para cálculo de frete
+// A loja fica em São Paulo, então frete baseado na UF de destino
+
+function calcularFrete(uf) {
+    const regioes = {
+        sudeste: {
+            estados: ['SP', 'RJ', 'MG', 'ES'],
+            valores: {
+                'SP': 10.00,  // Capital
+                'RJ': 15.00,
+                'MG': 18.00,
+                'ES': 20.00
+            }
+        },
+        sul: {
+            estados: ['PR', 'SC', 'RS'],
+            valorBase: 25.00
+        },
+        centroOeste: {
+            estados: ['GO', 'DF', 'MT', 'MS'],
+            valorBase: 30.00
+        },
+        nordeste: {
+            estados: ['BA', 'SE', 'AL', 'PE', 'PB', 'RN', 'CE', 'PI', 'MA'],
+            valorBase: 40.00
+        },
+        norte: {
+            estados: ['PA', 'AP', 'AM', 'RR', 'AC', 'RO', 'TO'],
+            valorBase: 50.00
+        }
+    }
+    
+    // Buscar região do estado
+    for (const [regiao, config] of Object.entries(regioes)) {
+        if (config.estados.includes(uf)) {
+            return config.valores?.[uf] || config.valorBase
+        }
+    }
+    
+    return 30.00 // Padrão
+}
+
+module.exports = { calcularFrete };
+

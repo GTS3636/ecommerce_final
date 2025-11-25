@@ -1,3 +1,10 @@
 Para que um pedido seja cadastrado:
 
-- criar um pedido 
+- criar um pedido pelo frontend pela página pedido
+- cadastrar o pedido
+- cadastrar uma entrega com os dados fornecidos na página pedido
+- cadastrar na tabela item_pedido os produtos do pedido
+- atualizar o estoque do produto na tabela estoque <- verificar se a quantidade requisitada não ultrapassa a quantidade armazenada
+- retornar mensagem de erro caso alguma parte dê errado
+
+- retornar mensagem de sucesso e informações, como local da entrega (cep, logradouro, cidade, bairro, etc.), cálculo do custo do frete, dado que a loja fica na cidade de São paulo, além do valor total com o frete e produtos no pedido, juntamente de suas respectivas quantidades solicitadas
