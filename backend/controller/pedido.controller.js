@@ -16,18 +16,20 @@ const buscarEnderecoPorCEP = async (cep) => {
         }
         
         const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`)
+
+        const data = await response.json()
         
-        if (response.data.erro) {
+        if (data.erro) {
             throw new Error('CEP não encontrado')
         }
         
         return {
-            cep: response.data.cep,
-            logradouro: response.data.logradouro,
-            complemento: response.data.complemento || '',
-            bairro: response.data.bairro,
-            localidade: response.data.localidade,
-            uf: response.data.uf
+            cep: data.cep,
+            logradouro: data.logradouro,
+            complemento: data.complemento || '',
+            bairro: data.bairro,
+            localidade: data.localidade,
+            uf: data.uf
         }
     } catch (error) {
         console.error('Erro ao buscar CEP:', error)
@@ -45,11 +47,27 @@ const cadastrar = async (req, res) => {
         })
     }
 
+    const transaction = await sequelize.transaction()
+
+    // 1. Buscar todos os produtos de uma vez
+        const produtoIds = itens.map(i => i.codProduto)
+        const produtos = await Produto.findAll({
+            where: { codProduto: produtoIds },
+            transaction
+        })
+
     // Validação dos itens
     for (const item of itens) {
-        if (!item.idProduto || !item.quantidade || item.quantidade <= 0) {
+        if (!item.codProduto || !item.quantidade || item.quantidade <= 0) {
             return res.status(400).json({
-                error: "Cada item deve ter idProduto e quantidade > 0"
+                error: "Cada item deve ter codProduto e quantidade > 0"
+            })
+        }
+    }
+    for (const produto of produtos){
+        if(produto.ativo === false || produto.ativo === "false"){
+            return res.status(400).json({
+                error: `O produto com o ID ${produto.codProduto} e nome ${produto.nome} não está ativo!`
             })
         }
     }
@@ -71,39 +89,38 @@ const cadastrar = async (req, res) => {
     // Montar objeto de entrega completo
     const entrega = {
         ...dadosEndereco,
-        numero,
+        numero: numero || "Sem número",
         complemento: complemento || dadosEndereco.complemento
     }
 
-    const transaction = await sequelize.transaction()
-
     try {
-        // 1. Buscar todos os produtos de uma vez
-        const produtoIds = itens.map(i => i.idProduto)
-        const produtos = await Produto.findAll({
-            where: { idProduto: produtoIds },
-            transaction
-        })
-
         // 2. Validar os produtos encontrado e calcular antes de criar registros
         if (produtos.length !== itens.length) {
             throw { status: 404, message: 'Um ou mais produtos não encontrados' }
         }
 
         const itensComPreco = itens.map(item => {
-            const produto = produtos.find(p => p.idProduto === item.idProduto)
+            const produto = produtos.find(p => p.codProduto === item.codProduto)
+            console.log(produto)
+            
             const valorItem = parseFloat(produto.preco) * item.quantidade
             return { ...item, precoUnitario: produto.preco, valorTotalItem: valorItem }
         })
-
-        const subtotal = itensComPreco.reduce((sum, i) => sum + i.valorTotalItem, 0)
+        const subtotal = itensComPreco.reduce((sum, i) => {
+            return sum + i.valorTotalItem
+        }, 0)
+        
         const valorFrete = calcularFrete(entrega.uf)
-        const valorTotal = subtotal + valorFrete
+        
+        let valorTotal = subtotal + valorFrete
+        
+        valorTotal = Math.round(valorTotal * 100) / 100 
 
         // 3. Verificar estoque com lock
         for (const item of itensComPreco) {
+            console.log("Item do loop for para itensComPreco: ", item);
             const estoque = await Estoque.findOne({
-                where: { idProduto: item.idProduto },
+                where: { idProduto: item.codProduto },
                 lock: transaction.LOCK.UPDATE,
                 transaction
             })
@@ -111,7 +128,7 @@ const cadastrar = async (req, res) => {
             if (!estoque || estoque.quantidade_atual < item.quantidade) {
                 throw { 
                     status: 400, 
-                    message: `Estoque insuficiente para produto ${item.idProduto}` 
+                    message: `Estoque insuficiente para produto ${item.codProduto}` 
                 }
             }
         }
@@ -119,9 +136,9 @@ const cadastrar = async (req, res) => {
         // 4. Criar registros
         const pedido = await Pedido.create({
             idUsuario,
-            valorSubtotal: subtotal.toFixed(2),
-            valorFrete: valorFrete.toFixed(2),
-            valorTotal: valorTotal.toFixed(2)
+            valorSubtotal: subtotal,
+            valorFrete: valorFrete,
+            valorTotal: valorTotal
         }, { transaction })
 
         // Criar entrega
@@ -135,15 +152,17 @@ const cadastrar = async (req, res) => {
         for (const item of itensComPreco) {
             const itemPedido = await ItemPedido.create({
                 idPedido: pedido.codPedido,
-                idProduto: item.idProduto,
+                idProduto: item.codProduto,
                 quantidade: item.quantidade,
-                precoUnitario: item.precoUnitario.toFixed(2),
-                valorTotalItem: item.valorTotalItem.toFixed(2)
+                precoUnitario: item.precoUnitario,
+                valorTotalItem: item.valorTotalItem
             }, { transaction })
 
+            console.log("Item do loop for para itensCriados: ", item);
+            
             await Estoque.decrement('quantidade_atual', {
                 by: item.quantidade,
-                where: { idProduto: item.idProduto },
+                where: { idProduto: item.codProduto },
                 transaction
             })
 
@@ -174,7 +193,7 @@ const cadastrar = async (req, res) => {
                 numero: entregaCriada.numero
             },
             itens: itensCriados.map(item => ({
-                idProduto: item.idProduto,
+                idProduto: item.codProduto,
                 quantidade: item.quantidade,
                 precoUnitario: item.precoUnitario,
                 valorTotalItem: item.valorTotalItem

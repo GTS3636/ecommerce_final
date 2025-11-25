@@ -15,8 +15,6 @@ conn.authenticate()
         app.listen(PORT, HOST, () => {
             console.log(`Servidor rodando em http://${HOST}:${PORT}`)
         })
-        // TEMPORÁRIO: mantém o processo vivo
-        setInterval(() => { }, 1000)
     })
     .catch((err) => {
         console.error('Erro ao conectar ao banco:', err)

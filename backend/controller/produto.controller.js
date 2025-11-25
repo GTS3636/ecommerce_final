@@ -1,4 +1,5 @@
 const Produto = require('../models/Produto')
+const Estoque = require("../models/Estoque")
 
 const cadastrar = async (req, res) => {
     const valores = req.body
@@ -6,8 +7,9 @@ const cadastrar = async (req, res) => {
     // Campos obrigatórios
     const camposObrigatorios = [
         'nome', 'preco', 'ativo', 
-        'especificacoes', 'categoria'
-    ];
+        'especificacoes', 'categoria',
+        'quantidade_minima'
+    ]
     
     // Validação dos campos obrigatórios com a função filter
     const camposFaltando = camposObrigatorios.filter(campo => !valores[campo])
@@ -20,9 +22,17 @@ const cadastrar = async (req, res) => {
     }
     
     try {
-        // Criar registro de produto
-        const dados = await Produto.create(valores)
-        return res.status(201).json(dados)
+        // Criar registro de produto e estoque
+        const dadosProduto = await Produto.create(valores)
+        const produto = await Produto.findByPk(dadosProduto.codProduto)
+
+        const dadosEstoque = await Estoque.create({idProduto: produto.codProduto, quantidade_minima:valores.quantidade_minima})
+        const estoque = await Estoque.findByPk(dadosEstoque.codEstoque)
+
+        return res.status(201).json({
+            produto:{produto}, 
+            estoque:{estoque}
+        })
         
     } catch (err) {
         console.error('Erro ao cadastrar produto:', err)
@@ -40,6 +50,8 @@ const listar = async (req, res) => {
 }
 const atualizar = async (req, res) => {
     const valores = req.body
+    console.log(valores)
+    
     try {
         let ProdutoExist = await Produto.findByPk(valores.codProduto)
         if(!ProdutoExist){
