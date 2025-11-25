@@ -1,10 +1,11 @@
 const Pedido = require('../models/Pedido')
+const Usuario = require("../models/Usuario")
 
 const cadastrar = async (req, res) => {
     const valores = req.body
     
     const camposObrigatorios = [
-        'idProduto', 'quantidade_atual', 'quantidade_minima'
+        'idUsuario'
     ]
 
     const camposFaltando = camposObrigatorios.filter(campo => !valores[campo])
@@ -14,6 +15,12 @@ const cadastrar = async (req, res) => {
             error: "Todos os campos são obrigatórios!",
             camposFaltando 
         })
+    }
+
+    const usuarioConsultado = await Usuario.findByPk(valores.idUsuario)
+
+    if(!usuarioConsultado){
+        return res.status(404).json({error: "Não foi possível encontrar o usuário com o ID informado!"})
     }
     
     try {
@@ -38,32 +45,33 @@ const listar = async (req, res) => {
 const atualizar = async (req, res) => {
     const valores = req.body
     try {
-        const pedidoExist = await Pedido.findByPk(valores.codPedido)
+        let pedidoExist = await Pedido.findByPk(valores.codPedido)
         if(!pedidoExist){
-            return res.status(404).json({error: "Não foi encontrado nenhum estoque com o código informado!"})
+            return res.status(404).json({error: "Não foi encontrado nenhum pedido com o código informado!"})
         }
         // Atualizar registro de Estoque
-        const dados = await Pedido.update(valores,{where:{codPedido:valores.codPedido}})
-        return res.status(201).json(dados)
+        await Pedido.update(valores,{where:{codPedido:valores.codPedido}})
+        pedidoExist = await Pedido.findByPk(valores.codPedido)
+        return res.status(201).json(pedidoExist)
     } catch (err) {
         console.error('Erro ao atualizar o pedido:', err)
         return res.status(500).json({error: 'Erro ao atualizar o pedido. Tente novamente mais tarde.'})
     }
 }
 const consultar = async (req, res) => {
-    const valores = req.body
+    const codPedido = req.params.id
     
-    if(!valores.codPedido){
+    if(!codPedido){
         return res.status(404).json({error: "É preciso informar o código do pedido!"})
     }
     
     try {
-        const pedidoExist = await Pedido.findByPk(valores.codPedido)
+        let pedidoExist = await Pedido.findByPk(codPedido)
         if(!pedidoExist){
-            return res.status(404).json({error: "Não foi encontrado nenhum estoque com o código informado!"})
+            return res.status(404).json({error: "Não foi encontrado nenhum pedido com o código informado!"})
         }
-        const dados = await Pedido.update(valores,{where:{codPedido:valores.codPedido}})
-        return res.status(201).json(dados)
+        pedidoExist = await Pedido.findByPk(codPedido)
+        return res.status(200).json(pedidoExist)
     } catch (err) {
         console.error('Erro ao atualizar o pedido:', err)
         return res.status(500).json({error: 'Erro ao atualizar o pedido. Tente novamente mais tarde.'})

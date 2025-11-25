@@ -1,93 +1,101 @@
-const produtoService = require('../services/produto.service');
-class ProdutoController {
-    async cadastrar(req, res) {
-        try {
-            const novoProduto = await produtoService.criarProduto(req.body)
-            return res.status(201).json(novoProduto)
-        } catch (err) {
-            console.error("Erro ao cadastrar o produto: ", err);
-            
-            const statusCode = err.statusCode || 500
-            return res.status(statusCode).json({
-                error: "Erro ao cadastrar o produto, tente novamente mais tarde."
-            })
-        }
-    }
+const Produto = require('../models/Produto')
 
-    async consultarPorId (req, res) {
-        try {
-            const codProduto = req.params.id
-            if(!codProduto){
-                return res.status(400).json({error: "É necessário informar o ID do produto para consulta!"})
-            }
-            const produto = produtoService.buscarProdutoPorId(codProduto)
-            return res.status(200).json(produto)
-        } catch (err) {
-            console.error("Erro ao consultar o produto por ID: ", err)
-            const statusCode = err.statusCode || 500
-            return res.status(statusCode).json({
-                error: "Erro ao consultar o produto por ID, tente novamente mais tarde."
-            })
-        }
+const cadastrar = async (req, res) => {
+    const valores = req.body
+    
+    // Campos obrigatórios
+    const camposObrigatorios = [
+        'nome', 'preco', 'ativo', 
+        'especificacoes', 'categoria'
+    ];
+    
+    // Validação dos campos obrigatórios com a função filter
+    const camposFaltando = camposObrigatorios.filter(campo => !valores[campo])
+    
+    if (camposFaltando.length > 0) {
+        return res.status(400).json({ 
+            error: "Todos os campos são obrigatórios!",
+            camposFaltando 
+        })
     }
-
-    async atualizar (req, res) {
-        try {
-            const valores = req.body
-            const produtoCad = produtoService.atualizarProduto(valores)
-            return res.status(200).json(produtoCad)
-        } catch (err) {
-            console.error("Erro ao atualizar o produto: ",err)
-            const statusCode = err.statusCode || 500
-            return res.status(statusCode).json({
-                error: "Erro ao atualizar o produto, tente novamente mais tarde."
-            })
-        }
-    }
-
-    async deletar (req, res) {
-        try {
-            const codProduto = req.body.codProduto
-            await produtoService.deletarProduto(codProduto)
-            return res.status(200).json({message: "Sucesso ao deletar o produto!"})
-        } catch (err) {
-            console.error("Erro ao deletar o produto: ", err)
-            const statusCode = err.statusCode || 500
-            return res.status(statusCode).json({
-                error: "Erro ao deletar o produto, tente novamente mais tarde."
-            })
-        }
-    }
-
-    async listarComFiltro(req, res) {
-        // Verificação para presença de chaves
-        if (Object.keys(req.query).length === 0) {
-            return this.listarProdutos(req, res)
-        }
-        try {
-            const produtos = await produtoService.listarProdutosFiltro(req.query)
-            return res.status(200).json(produtos)
-        } catch (err) {
-            console.error("Erro ao listar os produtos com filtro: ", err)
-            const statusCode = err.statusCode || 500
-            return res.status(statusCode).json({
-                error: "Erro ao listar os produtos com filtro, tente novamente mais tarde."
-            })
-        }
-    }
-
-    async listarProdutos(req,res) {
-        try {
-            const produtos = await produtoService.listarProdutosTodos()
-            return res.status(200).json(produtos)
-        } catch (err) {
-            console.error("Erro ao listar os produtos: ", err);
-            const statusCode = err.statusCode || 500
-            return res.status(statusCode).json({
-                error: "Erro ao listar os produtos, tente novamente mais tarde."
-            })
-        }
+    
+    try {
+        // Criar registro de produto
+        const dados = await Produto.create(valores)
+        return res.status(201).json(dados)
+        
+    } catch (err) {
+        console.error('Erro ao cadastrar produto:', err)
+        return res.status(500).json({error: 'Erro ao cadastrar produto. Tente novamente mais tarde.'})
     }
 }
-
-module.exports = new ProdutoController();
+const listar = async (req, res) => {
+    try {
+        const dados = await Produto.findAll()
+        return res.status(201).json(dados)
+    } catch (err) {
+        console.error('Erro ao listar os produtos:', err)
+        return res.status(500).json({error: 'Erro ao listar os produtos. Tente novamente mais tarde.'})
+    }
+}
+const atualizar = async (req, res) => {
+    const valores = req.body
+    try {
+        let ProdutoExist = await Produto.findByPk(valores.codProduto)
+        if(!ProdutoExist){
+            return res.status(404).json({error: "Não foi encontrado nenhum produto com o código informado!"})
+        }
+        // Atualizar registro de Produto
+        await Produto.update(valores,{where:{codProduto:valores.codProduto}})
+        ProdutoExist = await Produto.findByPk(valores.codProduto)
+        return res.status(201).json(ProdutoExist)
+    } catch (err) {
+        console.error('Erro ao atualizar o produto:', err)
+        return res.status(500).json({error: 'Erro ao atualizar o produto. Tente novamente mais tarde.'})
+    }
+}
+const consultar = async (req, res) => {
+    const codProduto = req.params.id
+    
+    if(!codProduto){
+        return res.status(404).json({error: "Todos os campos são obrigatórios!"})
+    }
+    
+    try {
+        const ProdutoExist = await Produto.findByPk(codProduto)
+        if(!ProdutoExist){
+            return res.status(404).json({error: "Não foi encontrado nenhum produto com o código informado!"})
+        }
+        // Atualizar registro de Produto
+        return res.status(201).json(ProdutoExist)
+    } catch (err) {
+        console.error('Erro ao consultar o produto:', err)
+        return res.status(500).json({error: 'Erro ao consultar o produto. Tente novamente mais tarde.'})
+    }
+}
+const deletar = async (req,res) => {
+    const valores = req.body
+    if(
+        !valores.codProduto
+    ){
+        return res.status(403).json({error: "É preciso informar o código do produto!"})
+    }
+    try{
+        const produtoExist = await Produto.findByPk(valores.codProduto)
+        if(!produtoExist){
+            return res.status(404).json({error: "Não foi possível encontrar nenhum produto com o código inserido!"})
+        }
+        await Produto.destroy({where:{codProduto: valores.codProduto}})
+        res.status(200).json({message: "Sucesso ao deletar o produto!"})
+    }catch(err){
+        console.error('Erro ao fazer a deleção do produto: ',err)
+        res.status(500).json({error: 'Erro ao fazer a deleção do produto, tente novamente mais tarde!'})
+    }
+}
+module.exports = { 
+    cadastrar, 
+    listar, 
+    atualizar, 
+    deletar, 
+    consultar 
+}

@@ -3,15 +3,19 @@ const router = express.Router()
 
 const produtoController = require("../controller/produto.controller")
 
-//Finalizado
+// Pronto
 router.post("/cadastrar", produtoController.cadastrar)
-// Finalizado
-router.get("/listar", produtoController.listarProdutos)
-// Finalizado
-router.get("/filtro", produtoController.listarComFiltro)
-// 
+
+// Pronto
 router.put("/atualizar", produtoController.atualizar)
-// 
+
+// Pronto
+router.get("/listar", produtoController.listar)
+
+// Pronto
+router.get("/consultar/:id", produtoController.consultar)
+
+// Pronto
 router.delete("/deletar/:id", produtoController.deletar)
 
 module.exports = router
