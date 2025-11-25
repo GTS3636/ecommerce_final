@@ -81,23 +81,21 @@ const atualizar = async (req, res) => {
     }
 }
 const consultar = async (req, res) => {
-    const valores = req.body
-    
-    if(!valores.codEntrega){
-        return res.status(404).json({error: "Todos os campos são obrigatórios!"})
+    const codEntrega = req.params.id
+
+    if(!codEntrega){
+        return res.status(400).json({error: "É preciso informar o código da entrega!"})
     }
-    
+
     try {
-        const entregaExist = await Entrega.findByPk(valores.codEntrega)
+        const entregaExist = await Entrega.findByPk(codEntrega)
         if(!entregaExist){
             return res.status(404).json({error: "Não foi encontrada nenhuma entrega com o código informado!"})
         }
-        // Atualizar registro de entrega
-        const dados = await Entrega.update(valores,{where:{codEntrega:valores.codEntrega}})
-        return res.status(201).json(dados)
+        return res.status(200).json(entregaExist)
     } catch (err) {
-        console.error('Erro ao atualizar a entrega:', err)
-        return res.status(500).json({error: 'Erro ao atualizar a entrega. Tente novamente mais tarde.'})
+        console.error('Erro ao consultar a entrega:', err)
+        return res.status(500).json({error: 'Erro ao consultar a entrega. Tente novamente mais tarde.'})
     }
 }
 

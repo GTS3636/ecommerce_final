@@ -22,7 +22,7 @@ const pedidoRoutes = require('../routes/pedido.routes')
 app.use('/usuario', usuarioRoutes)
 app.use('/login', authRoutes)
 app.use('/produto', produtoRoutes)
-// Falta testar
+
 app.use('/entrega', entregaRoutes)
 app.use('/estoque', estoqueRoutes)
 app.use('/itemPedido', itemPedidoRoutes)

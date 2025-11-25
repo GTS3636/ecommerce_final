@@ -47,7 +47,7 @@ const atualizar = async (req, res) => {
     try {
         let pedidoExist = await Pedido.findByPk(valores.codPedido)
         if(!pedidoExist){
-            return res.status(404).json({error: "Não foi encontrado nenhum estoque com o código informado!"})
+            return res.status(404).json({error: "Não foi encontrado nenhum pedido com o código informado!"})
         }
         // Atualizar registro de Estoque
         await Pedido.update(valores,{where:{codPedido:valores.codPedido}})
@@ -68,10 +68,10 @@ const consultar = async (req, res) => {
     try {
         let pedidoExist = await Pedido.findByPk(codPedido)
         if(!pedidoExist){
-            return res.status(404).json({error: "Não foi encontrado nenhum estoque com o código informado!"})
+            return res.status(404).json({error: "Não foi encontrado nenhum pedido com o código informado!"})
         }
         pedidoExist = await Pedido.findByPk(codPedido)
-        return res.status(201).json(pedidoExist)
+        return res.status(200).json(pedidoExist)
     } catch (err) {
         console.error('Erro ao atualizar o pedido:', err)
         return res.status(500).json({error: 'Erro ao atualizar o pedido. Tente novamente mais tarde.'})

@@ -54,23 +54,21 @@ const atualizar = async (req, res) => {
     }
 }
 const consultar = async (req, res) => {
-    const valores = req.body
-    
-    if(!valores.idProduto){
-        return res.status(404).json({error: "Todos os campos são obrigatórios!"})
+    const idProduto = req.params.id
+
+    if(!idProduto){
+        return res.status(400).json({error: "É preciso informar o ID do produto!"})
     }
-    
+
     try {
-        const estoqueExist = await Estoque.findOne({where:{idProduto: valores.idProduto}})
+        const estoqueExist = await Estoque.findOne({where:{idProduto: idProduto}})
         if(!estoqueExist){
-            return res.status(404).json({error: "Não foi encontrado nenhum estoque com o código informado!"})
+            return res.status(404).json({error: "Não foi encontrado nenhum estoque para o produto informado!"})
         }
-        // Atualizar registro de Estoque
-        const dados = await Estoque.update(valores,{where:{codEstoque:valores.codEstoque}})
-        return res.status(201).json(dados)
+        return res.status(200).json(estoqueExist)
     } catch (err) {
-        console.error('Erro ao atualizar o estoque:', err)
-        return res.status(500).json({error: 'Erro ao atualizar o estoque. Tente novamente mais tarde.'})
+        console.error('Erro ao consultar o estoque:', err)
+        return res.status(500).json({error: 'Erro ao consultar o estoque. Tente novamente mais tarde.'})
     }
 }
 
