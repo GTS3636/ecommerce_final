@@ -1,8 +1,10 @@
 let produtosList = document.getElementById("produtosList")
 
 // Load products on page load
-window.addEventListener("load", () => {
+document.addEventListener("DOMContentLoaded", () => {
     listarProdutos()
+    console.log("Página carregada e função lançada");
+    
 })
 
 function listarProdutos() {
