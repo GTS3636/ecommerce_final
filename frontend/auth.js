@@ -49,6 +49,7 @@ const isOnPublicPage  = isOnCarrinhoPage || isOnIndexPage || isOnSearchPage || i
 // }
 setupUserInfo()
 // setupLogout()
+setupMenu()
 menu()
 
 function setupLogout() {
@@ -121,4 +122,18 @@ function menu() {
             closeSidebar()
         }
     })
+}
+
+function setupMenu() {
+    const header_left = document.getElementById("header-left-menu")
+    const menuBtn = document.createElement("button")
+
+    menuBtn.className = "menu-btn"
+    menuBtn.id = "menuBtn"
+
+    const iBtnMenu = document.createElement("i")
+    iBtnMenu.className = "fas fa-bars"
+
+    menuBtn.appendChild(iBtnMenu)
+    header_left.appendChild(menuBtn)
 }
