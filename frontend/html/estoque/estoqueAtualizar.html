@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Atualizar Estoque</title>
+</head>
+<body>
+    <nav>
+        <a href="../../index.html">Home</a>
+        <a href="estoqueIndex.html">Voltar</a>
+        <span id="nomeP"></span>
+        <a id="logout" href="#">Logout</a>
+    </nav>
+    <h1>Atualizar Estoque</h1>
+    <form id="atualizarForm">
+        <label for="idProduto">ID do Produto:</label>
+        <input type="number" id="idProduto" name="idProduto" required><br>
+        <label for="quantidade_atual">Quantidade Atual:</label>
+        <input type="number" id="quantidade_atual" name="quantidade_atual"><br>
+        <label for="quantidade_minima">Quantidade Mínima:</label>
+        <input type="number" id="quantidade_minima" name="quantidade_minima"><br>
+        <button type="submit">Atualizar</button>
+    </form>
+    <script src="../../auth.js"></script>
+</body>
+</html>

@@ -14,40 +14,57 @@ const isOnSearchPage = location.pathname.endsWith("/search.html")
 const isOnAuthPage = isOnLoginPage || isOnRegisterPage
 const isOnPublicPage  = isOnCarrinhoPage || isOnIndexPage || isOnSearchPage || isOnAuthPage
 
-if(!token && !isOnPublicPage ){
-    location.href = loginPath
-}
+// if(!token && !isOnPublicPage ){
+//     location.href = loginPath
+// }
 
-if(token && isOnAuthPage){
-    location.href = indexPath
-}
+// if(token && isOnAuthPage){
+//     location.href = indexPath
+// }
 
-if (isOnIndexPage && tipoUsuario === "ADMIN") {
-    const nav = document.querySelector("nav")
+// if (isOnIndexPage && tipoUsuario === "ADMIN") {
+//     const nav = document.querySelector("nav")
     
-    if (nav) {
-        const adminLinks = [
-            { href: "./html/produto/produtoIndex.html", text: "Produtos" },
-            { href: "./html/usuario/usuarioIndex.html", text: "Usuários" },
-            { href: "./html/entrega/entregaIndex.html", text: "Entregas" },
-            { href: "./html/estoque/estoqueIndex.html", text: "Estoque" },
-            { href: "./html/pedido/pedidoIndex.html", text: "Pedidos" }
-        ]
+//     if (nav) {
+//         const adminLinks = [
+//             { href: "./html/produto/produtoIndex.html", text: "Produtos" },
+//             { href: "./html/usuario/usuarioIndex.html", text: "Usuários" },
+//             { href: "./html/entrega/entregaIndex.html", text: "Entregas" },
+//             { href: "./html/estoque/estoqueIndex.html", text: "Estoque" },
+//             { href: "./html/pedido/pedidoIndex.html", text: "Pedidos" }
+//         ]
 
-        adminLinks.forEach(link => {
-            const anchor = document.createElement("a")
-            anchor.href = link.href
-            anchor.textContent = link.text
-            nav.appendChild(anchor)
-        })
-    }
-}
-if (token && !isOnAuthPage){
-    setupNome()
-    setupLogout()
-}
+//         adminLinks.forEach(link => {
+//             const anchor = document.createElement("a")
+//             anchor.href = link.href
+//             anchor.textContent = link.text
+//             nav.appendChild(anchor)
+//         })
+//     }
+// }
+// if (token && !isOnAuthPage){
+//     setupUserInfo()
+//     setupLogout()
+//     menu()
+// }
+setupUserInfo()
+// setupLogout()
+menu()
 
 function setupLogout() {
+    const header_right = document.getElementById("header-right")
+    
+    const logoutBtn = document.createElement("button")
+    logoutBtn.className = "header-btn"
+    logoutBtn.textContent = "Logout"
+    logoutBtn.id = "logout"
+
+    const iLogoutBtn = document.createElement("i")
+    iLogoutBtn.className = "fas fa-arrow-right-from-bracket"
+
+    header_right.appendChild(logoutBtn)
+    logoutBtn.appendChild(iLogoutBtn)
+
     const logout = document.getElementById("logout")
     if (logout){
         logout.addEventListener("click", (e)=>{
@@ -61,11 +78,47 @@ function setupLogout() {
     }
 }
 
-function setupNome() {
-    const nomeP = document.getElementById("nomeP")
+function setupUserInfo() {
     const nomeUser = localStorage.getItem("nomeUser")
-
-    if(nomeP && nomeUser){
-        nomeP.textContent = nomeUser
+    const user_text = document.getElementById("user-text")
+    if (nomeUser && user_text){
+        user_text.innerHTML = `Olá, ${nomeUser}!`
     }
+    if((tipoUsuario && user_text)&&(tipoUsuario === "ADMIN")){
+        user_text.innerHTML += `Sua permissão: ${tipoUsuario}!`
+    }
+}
+
+function menu() {
+    // Elementos do DOM
+    const menuBtn = document.getElementById('menuBtn')
+    const closeBtn = document.getElementById('closeBtn')
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('overlay')
+
+    // Função para abrir o menu
+    function openSidebar() {
+        sidebar.classList.add('active')
+        overlay.classList.add('active')
+        document.body.style.overflow = 'hidden' // Previne scroll na página
+    }
+
+    // Função para fechar o menu
+    function closeSidebar() {
+        sidebar.classList.remove('active')
+        overlay.classList.remove('active')
+        document.body.style.overflow = '' // Restaura o scroll
+    }
+
+    // Event Listeners
+    menuBtn.addEventListener('click', openSidebar)
+    closeBtn.addEventListener('click', closeSidebar)
+    overlay.addEventListener('click', closeSidebar)
+
+    // Fechar menu com tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+            closeSidebar()
+        }
+    })
 }

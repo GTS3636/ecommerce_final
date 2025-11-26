@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lojas Tijucanas</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="auth.js" defer></script>
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-btn" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="./html/produto/produtoIndex.html" class="sidebar-link">
+                <i class="fas fa-box"></i> Produtos
+            </a>
+            <a href="./html/usuario/usuarioIndex.html" class="sidebar-link">
+                <i class="fas fa-users"></i> Usuários
+            </a>
+            <a href="./html/entrega/entregaIndex.html" class="sidebar-link">
+                <i class="fas fa-truck"></i> Entregas
+            </a>
+            <a href="./html/estoque/estoqueIndex.html" class="sidebar-link">
+                <i class="fas fa-warehouse"></i> Estoque
+            </a>
+            <a href="./html/pedido/pedidoIndex.html" class="sidebar-link">
+                <i class="fas fa-shopping-bag"></i> Pedidos
+            </a>
+        </nav>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-text" id="user-text">
+                    <p>Faça Login ou</p>
+                    <p>Cadastre-se para</p>
+                    <p>acessar sua conta</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <h1 class="logo">Lojas Tijucanas</h1>
+        </div>
+
+        <div class="header-right">
+            <button class="header-btn">
+                <i class="fas fa-arrow-right-to-bracket"></i> Login
+            </button>
+            <button class="header-btn">
+                <i class="fas fa-user-plus"></i> Sign Up
+            </button>
+        </div>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input 
+            type="text" 
+            class="search-input" 
+            placeholder="(produto prévio pesquisado) ou (recomendação aleatória)"
+        >
+        <button class="search-btn">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+
+    <!-- Products Grid -->
+    <main class="products-grid">
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p class="footer-text">Desenvolvido por Guilherme Tomas Oliva</p>
+        
+        <button class="cart-btn">
+            <i class="fas fa-shopping-cart"></i>
+        </button>
+    </footer>
+</body>
+</html>

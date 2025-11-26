@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Atualizar Entrega</title>
+</head>
+<body>
+    <nav>
+        <a href="../../index.html">Home</a>
+        <a href="entregaIndex.html">Voltar</a>
+        <span id="nomeP"></span>
+        <a id="logout" href="#">Logout</a>
+    </nav>
+    <h1>Atualizar Entrega</h1>
+    <form id="atualizarForm">
+        <label for="codEntrega">Código da Entrega:</label>
+        <input type="number" id="codEntrega" name="codEntrega" required><br>
+        <label for="idPedido">ID do Pedido:</label>
+        <input type="number" id="idPedido" name="idPedido" required><br>
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" name="cep" required><br>
+        <label for="logradouro">Logradouro:</label>
+        <input type="text" id="logradouro" name="logradouro" required><br>
+        <label for="complemento">Complemento:</label>
+        <input type="text" id="complemento" name="complemento"><br>
+        <label for="bairro">Bairro:</label>
+        <input type="text" id="bairro" name="bairro" required><br>
+        <label for="localidade">Localidade:</label>
+        <input type="text" id="localidade" name="localidade" required><br>
+        <label for="uf">UF:</label>
+        <input type="text" id="uf" name="uf" required maxlength="2"><br>
+        <label for="numero">Número:</label>
+        <input type="text" id="numero" name="numero" required><br>
+        <label for="dataEstimada">Data Estimada:</label>
+        <input type="date" id="dataEstimada" name="dataEstimada"><br>
+        <label for="codigoRastreio">Código de Rastreio:</label>
+        <input type="text" id="codigoRastreio" name="codigoRastreio"><br>
+        <label for="statusEntrega">Status da Entrega:</label>
+        <select id="statusEntrega" name="statusEntrega" required>
+            <option value="EM_TRANSITO">Em Trânsito</option>
+            <option value="SAIU_PARA_ENTREGA">Saiu para Entrega</option>
+            <option value="ENTREGUE">Entregue</option>
+            <option value="EXTRAVIADO">Extraviado</option>
+        </select><br>
+        <button type="submit">Atualizar</button>
+    </form>
+    <script src="../../auth.js"></script>
+</body>
+</html>

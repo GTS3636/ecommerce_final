@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar Pedido</title>
+</head>
+<body>
+    <nav>
+        <a href="../../index.html">Home</a>
+        <a href="pedidoIndex.html">Voltar</a>
+        <span id="nomeP"></span>
+        <a id="logout" href="#">Logout</a>
+    </nav>
+    <h1>Consultar Pedido</h1>
+    <form id="consultarForm">
+        <label for="codPedido">Código do Pedido:</label>
+        <input type="number" id="codPedido" name="codPedido" required><br>
+        <button type="submit">Consultar</button>
+    </form>
+    <div id="pedidoDetails">
+        <p>Detalhes do pedido serão exibidos aqui.</p>
+    </div>
+    <script src="../../auth.js"></script>
+</body>
+</html>

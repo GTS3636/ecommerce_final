@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar Usuário</title>
+</head>
+<body>
+    <nav>
+        <a href="../../index.html">Home</a>
+        <a href="usuarioIndex.html">Voltar</a>
+        <span id="nomeP"></span>
+        <a id="logout" href="#">Logout</a>
+    </nav>
+    <h1>Consultar Usuário</h1>
+    <form id="consultarForm">
+        <label for="nome">Nome do Usuário:</label>
+        <input type="text" id="nome" name="nome" required><br>
+        <button type="submit">Consultar</button>
+    </form>
+    <div id="usuarioDetails">
+        <p>Detalhes do usuário serão exibidos aqui.</p>
+    </div>
+    <script src="../../auth.js"></script>
+</body>
+</html>
