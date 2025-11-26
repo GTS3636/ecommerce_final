@@ -613,7 +613,7 @@ label {
     color: #333;
 }
 
-button {
+.btnFunction {
     background-color: #1e90ff;
     border: white double 5px;
     padding: 0.5rem;
@@ -625,7 +625,7 @@ button {
     font-size: 1.05rem;
 }
 
-button:hover {
+.btnFunction:hover {
     background-color: #e3f2fd;
     color: #1e90ff;
     border: #1e90ff double 5px;

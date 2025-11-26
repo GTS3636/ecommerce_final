@@ -12,7 +12,7 @@ const cadastrar = async (req, res) => {
     ]
     
     // Validação dos campos obrigatórios com a função filter
-    const camposFaltando = camposObrigatorios.filter(campo => !valores[campo])
+    const camposFaltando = camposObrigatorios.filter(campo => valores[campo] == null || valores[campo] === '')
     
     if (camposFaltando.length > 0) {
         return res.status(400).json({ 
@@ -22,6 +22,11 @@ const cadastrar = async (req, res) => {
     }
     
     try {
+        // Parse especificacoes if it's a string
+        if (typeof valores.especificacoes === 'string') {
+            valores.especificacoes = JSON.parse(valores.especificacoes)
+        }
+
         // Criar registro de produto e estoque
         const dadosProduto = await Produto.create(valores)
         const produto = await Produto.findByPk(dadosProduto.codProduto)
