@@ -11,6 +11,8 @@ body {
     flex-direction: column;
     min-height: 100vh;
     overflow-x: hidden;
+    display: grid;
+    grid-template-rows: 100px auto 100px;
 }
 
 /* Sidebar */
@@ -238,12 +240,61 @@ body {
     flex: 1;
 }
 
+/* Main Content */
+.main-content {
+    background-color: #fff;
+    /* Fundo branco */
+    max-width: 600px;
+    /* Largura máxima da caixa */
+    margin: 40px auto;
+    /* Centraliza na tela */
+    padding: 30px;
+    /* Espaço interno */
+    border-radius: 10px;
+    /* Cantos arredondados */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* Sombra suave para dar profundidade */
+    font-family: 'Segoe UI', sans-serif;
+    height: fit-content;
+}
+
+.main-content input,
+label {
+    margin-bottom: 10px;
+}
+
+.form-row {
+    display: flex;
+    /* Ativa o modo flexível */
+    gap: 20px;
+    /* Espaço entre as colunas */
+    margin-bottom: 15px;
+}
+
+.input-group {
+    flex: 1;
+    /* Faz com que ambos ocupem o mesmo tamanho */
+    display: flex;
+    flex-direction: column;
+    /* Garante que o Label fique em cima do Input */
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+#cadastrarForm {
+    border: 2px dashed #d3d3d3;
+    padding: 10px;
+    display: grid;
+}
+
 .product-card {
-    background-color: #d3d3d3;
+    background-color: white;
     height: 250px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    border: 2px solid #d3d3d3;
 }
 
 .product-card:hover {
@@ -260,6 +311,10 @@ body {
     justify-content: space-between;
     align-items: center;
     position: relative;
+    top: 1;
+    bottom: 1;
+    left: 0;
+    right: 0;
 }
 
 .social-icons {
@@ -494,6 +549,89 @@ body {
     margin-top: 0;
 }
 
+/* --- Estilo para Inputs de Texto e Textarea --- */
+/* Agrupamos seletores comuns para evitar repetição */
+input,
+textarea {
+    width: 100%;
+    /* Ocupa toda a largura do container pai */
+    padding: 12px;
+    /* Espaço interno confortável */
+    margin-bottom: 16px;
+    /* Espaço entre os campos */
+    border: 1px solid #ccc;
+    /* Borda sutil cinza */
+    border-radius: 6px;
+    /* Bordas levemente arredondadas */
+    font-size: 16px;
+    /* Tamanho legível e evita zoom no mobile */
+    font-family: inherit;
+    /* Herda a fonte do site */
+    transition: border-color 0.3s ease;
+    /* Suaviza a mudança de cor */
+    background-color: #fff;
+}
+
+/* --- Estado de Foco (Quando o usuário clica) --- */
+input:focus,
+textarea:focus {
+    outline: none;
+    /* Remove a linha padrão do navegador */
+    border-color: #007BFF;
+    /* Muda a cor da borda para azul (destaque) */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    /* Brilho suave externo */
+}
+
+/* --- Ajuste específico para Textarea --- */
+textarea {
+    resize: vertical;
+    /* Permite redimensionar apenas a altura */
+    min-height: 100px;
+    /* Altura inicial mínima */
+}
+
+/* --- Estilo para Checkbox --- */
+/* Usamos 'accent-color' que é a forma moderna e fácil de colorir */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    /* Mãozinha ao passar o mouse */
+    accent-color: #007BFF;
+    /* Cor de preenchimento quando marcado */
+    vertical-align: middle;
+    /* Alinha com o texto ao lado */
+    margin-right: 8px;
+    /* Espaço entre o checkbox e o label */
+}
+
+/* Estilo para o Label do checkbox para melhor UX */
+label {
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #333;
+}
+
+button {
+    background-color: #1e90ff;
+    border: white double 5px;
+    padding: 0.5rem;
+    border-radius: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bolder;
+    color: white;
+    transition: 500ms;
+    font-size: 1.05rem;
+}
+
+button:hover {
+    background-color: #e3f2fd;
+    color: #1e90ff;
+    border: #1e90ff double 5px;
+    transition: 500ms;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .products-grid {
@@ -506,11 +644,11 @@ body {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .search-input {
         width: 100%;
     }
@@ -540,16 +678,16 @@ body {
     .products-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .header-center .logo {
         font-size: 28px;
     }
-    
+
     .footer {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .footer-text {
         position: static;
         transform: none;

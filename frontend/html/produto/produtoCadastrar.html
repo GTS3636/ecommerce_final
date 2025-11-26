@@ -1,34 +1,133 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastrar Produto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Produto - Lojas Tijucanas</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../../auth.js" defer></script>
 </head>
 <body>
-    <nav>
-        <a href="../../index.html">Home</a>
-        <a href="produtoIndex.html">Voltar</a>
-        <span id="nomeP"></span>
-        <a id="logout" href="#">Logout</a>
-    </nav>
-    <h1>Cadastrar Produto</h1>
-    <form id="cadastrarForm">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required><br>
-        <label for="descricao">Descrição:</label>
-        <textarea id="descricao" name="descricao"></textarea><br>
-        <label for="preco">Preço:</label>
-        <input type="number" id="preco" name="preco" step="0.01" required><br>
-        <label for="imagem_url">URL da Imagem:</label>
-        <input type="text" id="imagem_url" name="imagem_url"><br>
-        <label for="ativo">Ativo:</label>
-        <input type="checkbox" id="ativo" name="ativo" checked><br>
-        <label for="especificacoes">Especificações (JSON):</label>
-        <textarea id="especificacoes" name="especificacoes">{"key": "value"}</textarea><br>
-        <label for="categoria">Categoria:</label>
-        <input type="text" id="categoria" name="categoria" required><br>
-        <button type="submit">Cadastrar</button>
-    </form>
-    <script src="../../auth.js"></script>
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-btn" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="../produto/produtoIndex.html" class="sidebar-link">
+                <i class="fas fa-box"></i> Produtos
+            </a>
+            <a href="../usuario/usuarioIndex.html" class="sidebar-link">
+                <i class="fas fa-users"></i> Usuários
+            </a>
+            <a href="../entrega/entregaIndex.html" class="sidebar-link">
+                <i class="fas fa-truck"></i> Entregas
+            </a>
+            <a href="../estoque/estoqueIndex.html" class="sidebar-link">
+                <i class="fas fa-warehouse"></i> Estoque
+            </a>
+            <a href="../pedido/pedidoIndex.html" class="sidebar-link">
+                <i class="fas fa-shopping-bag"></i> Pedidos
+            </a>
+            <a href="../../index.html" class="sidebar-link">
+                <i class="fa fa-home"></i> Home
+            </a>
+        </nav>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left" id="header-left">
+            <div id="header-left-menu">
+
+            </div>
+            <div class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-text" id="user-text">
+                    <p>Faça Login ou</p>
+                    <p>Cadastre-se para</p>
+                    <p>acessar sua conta</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <h1 class="logo">Lojas Tijucanas</h1>
+        </div>
+
+        <div class="header-right">
+            <button class="header-btn">
+                <i class="fas fa-arrow-right-to-bracket"></i> Login
+            </button>
+            <button class="header-btn">
+                <i class="fas fa-user-plus"></i> Sign Up
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 style="margin-top: 0; text-align: center; color: #333;">Cadastrar Produto</h1><hr>
+        <form id="cadastrarForm">
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="input-group">
+                    <label for="preco">Preço:</label>
+                    <input type="number" id="preco" name="preco" step="0.01" required>
+                </div>
+            </div><hr>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="imagem_url">URL da Imagem:</label>
+                    <input type="text" id="imagem_url" name="imagem_url">
+                </div>
+                <div class="input-group">
+                    <label for="ativo">Ativo?</label>
+                    <input type="checkbox" id="ativo" name="ativo">
+                </div>
+                <div class="input-group">
+                    <label for="categoria">Categoria:</label>
+                    <input type="text" id="categoria" name="categoria" required>
+                </div>
+            </div><hr>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="descricao">Descrição (opcional):</label>
+                    <textarea id="descricao" name="descricao"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="especificacoes">Especificações (JSON):</label>
+                    <textarea id="especificacoes" name="especificacoes">{"key": "value"}</textarea>
+                </div>
+            </div><hr>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p class="footer-text">Desenvolvido por Guilherme Tomaz Silva</p>
+
+        <button class="cart-btn">
+            <i class="fas fa-shopping-cart"></i>
+        </button>
+    </footer>
 </body>
 </html>
