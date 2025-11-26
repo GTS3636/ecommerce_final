@@ -2,8 +2,8 @@ const token = localStorage.getItem("token")
 const tipoUsuario = localStorage.getItem("tipoUsuario")
 
 const isSubFolder = location.pathname.includes("/html/")
-const loginPath = isSubFolder ? "../login.html" : "./login.html"
-const indexPath = isSubFolder ? "../index.html" : "./index.html"
+const loginPath = isSubFolder ? "../../login.html" : "./login.html"
+const indexPath = isSubFolder ? "../../index.html" : "./index.html"
 
 const isOnLoginPage = location.pathname.endsWith("/login.html")
 const isOnRegisterPage = location.pathname.endsWith("/register.html")

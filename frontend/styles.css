@@ -109,7 +109,7 @@ body {
 /* Header */
 .header {
     background: linear-gradient(135deg, #00bfff, #1e90ff);
-    padding: 45px 30px 45px;
+    padding: 15px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -151,12 +151,12 @@ body {
 }
 
 .user-text {
-    font-size: 0.95rem;
+    font-size: 11px;
     line-height: 1.3;
 }
 
 .header-center .logo {
-    font-size: 5.4rem;
+    font-size: 42px;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     letter-spacing: 2px;
@@ -315,6 +315,185 @@ body {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
+/* Auth Pages Styles */
+.auth-page {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+.auth-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: calc(100vh - 200px);
+}
+
+.auth-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    overflow: hidden;
+}
+
+.auth-tabs {
+    display: flex;
+    background-color: #f5f5f5;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+}
+
+.auth-tab:hover {
+    background-color: #e8f4f8;
+    color: #00bfff;
+}
+
+.auth-tab.active {
+    background-color: white;
+    color: #00bfff;
+    border-bottom-color: #00bfff;
+}
+
+.auth-tab i {
+    margin-right: 8px;
+}
+
+.auth-form {
+    padding: 40px;
+}
+
+.auth-title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.form-row {
+    margin-bottom: 20px;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group label i {
+    color: #00bfff;
+    font-size: 16px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #00bfff;
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+.auth-submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #00bfff, #1e90ff);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.auth-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
+}
+
+.auth-submit-btn:active {
+    transform: translateY(0);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.auth-footer p {
+    font-size: 14px;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #00bfff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.auth-footer a:hover {
+    color: #1e90ff;
+    text-decoration: underline;
+}
+
+.auth-footer-fixed {
+    margin-top: 0;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .products-grid {
@@ -334,6 +513,26 @@ body {
     
     .search-input {
         width: 100%;
+    }
+
+    .auth-card {
+        max-width: 100%;
+    }
+
+    .auth-form {
+        padding: 30px 20px;
+    }
+
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-tabs {
+        font-size: 14px;
+    }
+
+    .auth-tab {
+        padding: 15px 10px;
     }
 }
 

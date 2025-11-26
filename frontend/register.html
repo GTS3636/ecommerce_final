@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Lojas Sulistas</title>
+    <script src="./auth.js" defer></script>
+    <script src="./js/register.js" defer></script>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-page">
+    <!-- Header Simplificado -->
+    <header class="header">
+        <div class="header-center">
+            <h1 class="logo">Lojas Sulistas</h1>
+        </div>
+    </header>
+
+    <!-- Container de Autenticação -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Abas de Login/Cadastro -->
+            <div class="auth-tabs">
+                <a href="login.html" class="auth-tab">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <div class="auth-tab active">
+                    <i class="fas fa-user-plus"></i> Cadastro
+                </div>
+            </div>
+
+            <!-- Formulário de Cadastro -->
+            <form id="cadastrarForm" class="auth-form">
+                <h2 class="auth-title">Criar nova conta</h2>
+                <p class="auth-subtitle">Preencha seus dados para se cadastrar</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nome">
+                            <i class="fas fa-user"></i> Nome Completo
+                        </label>
+                        <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="senha">
+                            <i class="fas fa-lock"></i> Senha
+                        </label>
+                        <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                </div>
+
+                <div class="form-row form-row-2">
+                    <div class="form-group">
+                        <label for="telefone">
+                            <i class="fas fa-phone"></i> Telefone
+                        </label>
+                        <input type="text" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cpf">
+                            <i class="fas fa-id-card"></i> CPF
+                        </label>
+                        <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                    </div>
+                </div>
+
+                <div class="form-row form-row-2">
+                    <div class="form-group">
+                        <label for="identidade">
+                            <i class="fas fa-address-card"></i> Identidade (opcional)
+                        </label>
+                        <input type="text" id="identidade" name="identidade" placeholder="RG ou CNH">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo_usuario">
+                            <i class="fas fa-user-tag"></i> Tipo de Usuário
+                        </label>
+                        <select id="tipo_usuario" name="tipo_usuario" required>
+                            <option value="CLIENTE">Cliente</option>
+                            <option value="ADMIN">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-submit-btn">
+                    <i class="fas fa-user-plus"></i> Criar Conta
+                </button>
+
+                <div class="auth-footer">
+                    <p>Já tem uma conta? <a href="login.html">Faça login aqui</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Simplificado -->
+    <footer class="footer auth-footer-fixed">
+        <p class="footer-text">Desenvolvido por Guilherme Tomas Oliva</p>
+    </footer>
+</body>
+</html>

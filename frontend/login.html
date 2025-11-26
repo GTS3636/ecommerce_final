@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Lojas Sulistas</title>
+    <script src="auth.js" defer></script>
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-page">
+    <!-- Header Simplificado -->
+    <header class="header">
+        <div class="header-center">
+            <h1 class="logo">Lojas Sulistas</h1>
+        </div>
+    </header>
+
+    <!-- Container de Autenticação -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Abas de Login/Cadastro -->
+            <div class="auth-tabs">
+                <div class="auth-tab active">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </div>
+                <a href="register.html" class="auth-tab">
+                    <i class="fas fa-user-plus"></i> Cadastro
+                </a>
+            </div>
+
+            <!-- Formulário de Login -->
+            <form id="loginForm" class="auth-form">
+                <h2 class="auth-title">Bem-vindo de volta!</h2>
+                <p class="auth-subtitle">Entre com suas credenciais para continuar</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="senha">
+                            <i class="fas fa-lock"></i> Senha
+                        </label>
+                        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="lembrar">
+                        <span>Lembrar-me</span>
+                    </label>
+                    <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                </div>
+
+                <button type="submit" class="auth-submit-btn">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+
+                <div class="auth-footer">
+                    <p>Não tem uma conta? <a href="register.html">Cadastre-se aqui</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Simplificado -->
+    <footer class="footer auth-footer-fixed">
+        <p class="footer-text">Desenvolvido por Guilherme Tomas Oliva</p>
+    </footer>
+</body>
+</html>
