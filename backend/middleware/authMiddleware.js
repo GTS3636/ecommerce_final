@@ -1,23 +1,38 @@
 const { verificarToken } = require('../utils/tokenJWT')
 
-function authMiddleware(req,res,next){
-    const authHeader = req.headers['authorization']
+function authMiddleware(req, res, next) {
 
-    if(!authHeader){
-        return res.status(401).json({ error: 'Token não fornecido! Não tem autorização!'})
-    }
+// console.log('[AUTH MIDDLEWARE] - Iniciando verificação de token...')
 
-    const token = authHeader.split(' ')[1]
-    console.log('token Extraído: ', token)
+const authHeader = req.headers['authorization']
 
-    const dadosToken = verificarToken(token)
-    console.log('dados do token: ', dadosToken)
+if (!authHeader) {
+    console.log('[AUTH MIDDLEWARE] - Nenhum header Authorization encontrado!')
+    return res.status(401).json({ erro: 'Token não informado' })
+}
 
-    if(!dadosToken){
-        return res.status(403).json({error: "Token inválido!"})
-    }
+const token = authHeader.split(' ')[1]
 
-    next()
+if (!token) {
+    console.log('[AUTH MIDDLEWARE] - Token mal formatado!')
+    return res.status(401).json({ erro: 'Token inválido ou mal formatado' })
+}
+
+try {
+    const payload = verificarToken(token)
+
+    req.user = payload  
+
+    console.log('[AUTH MIDDLEWARE] - Token válido. Payload:')
+    console.log(req.user)
+
+    return next()
+
+} catch (err) {
+    console.log('[AUTH MIDDLEWARE] - Erro ao verificar token:', err.message)
+    return res.status(401).json({ erro: 'Token inválido ou expirado' })
+}
+
 }
 
 module.exports = authMiddleware

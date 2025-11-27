@@ -2,18 +2,18 @@ require('dotenv').config()
 const app = require('./server/app')
 const conn = require('./db/conn')
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 4000
 const HOST = process.env.HOST || 'localhost'
 
 // Testa conexão, sincroniza e sobe o servidor
-conn.authenticate()
-    .then(() => {
-        console.log('✓ Conexão com banco estabelecida')
-        return conn.sync()
-    })
+conn.sync()
+    // .then(() => {
+    //     console.log('✓ Conexão com banco estabelecida')
+    //     conn.sync()
+    // })
     .then(() => {
         app.listen(PORT, HOST, () => {
-            console.log(`Servidor rodando em http://${HOST}:${PORT}`)
+            console.log(`Servidor rodando em http://${HOST}:${PORT}/`)
         })
     })
     .catch((err) => {

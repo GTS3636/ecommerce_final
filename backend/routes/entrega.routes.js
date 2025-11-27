@@ -2,17 +2,20 @@ const express = require("express")
 const router = express.Router()
 
 const entregaController = require("../controller/entrega.controller")
+const authMiddleware = require("../middleware/authMiddleware")
+const adminMiddleware = require("../middleware/isAdmin.middleware")
+
 
 // 
-router.post("/cadastrar", entregaController.cadastrar)
+router.post("/cadastrar", authMiddleware, adminMiddleware, entregaController.cadastrar)
 
 // 
-router.put("/atualizar", entregaController.atualizar)
+router.put("/atualizar", authMiddleware, adminMiddleware, entregaController.atualizar)
 
 // 
-router.get("/listar", entregaController.listar)
+router.get("/listar", authMiddleware, adminMiddleware, entregaController.listar)
 
 // 
-router.get("/consultar/:id", entregaController.consultar)
+router.get("/consultar/:id", authMiddleware, adminMiddleware, entregaController.consultar)
 
 module.exports = router
