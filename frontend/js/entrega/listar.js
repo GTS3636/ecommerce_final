@@ -1,7 +1,7 @@
 let entregasList = document.getElementById("entregasList")
 
 // Load deliveries on page load
-window.addEventListener("load", () => {
+document.addEventListener("DOMContentLoaded", () => {
     listarEntregas()
 })
 
@@ -9,6 +9,7 @@ function listarEntregas() {
     fetch("http://localhost:3000/entrega/listar", {
         method: "GET",
         headers: {
+            'Authorization': `Bearer ${token}`,
             "Content-Type": "application/json"
         }
     })

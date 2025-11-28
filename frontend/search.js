@@ -97,7 +97,7 @@ const createProductCard = (produto) => {
     card.className = 'product-card';
     
     // Verificar se há imagem, se não usar placeholder
-    const imagemUrl = produto.imagem_url || 'https://via.placeholder.com/300x200?text=Produto+Sem+Imagem';
+    const imagemUrl = produto.imagem_url
     
     // Verificar especificações e criar string legível
     let especificacoesTexto = '';
@@ -118,7 +118,7 @@ const createProductCard = (produto) => {
     
     card.innerHTML = `
         <div class="product-image">
-            <img src="${imagemUrl}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/300x200?text=Imagem+não+disponível'">
+            <img src="${imagemUrl}" alt="${produto.nome}">
         </div>
         <div class="product-info">
             <h3 class="product-name">${produto.nome}</h3>
@@ -137,12 +137,6 @@ const createProductCard = (produto) => {
     `;
     
     return card;
-};
-
-// Função para adicionar ao carrinho (será implementada posteriormente)
-const addToCart = (productId) => {
-    // Por enquanto, apenas um alert. Implementação completa do carrinho será feita depois
-    alert(`Produto ${productId} adicionado ao carrinho!`);
 };
 
 // Carregar produtos quando a página for carregada

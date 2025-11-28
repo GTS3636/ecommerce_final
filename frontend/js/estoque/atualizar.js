@@ -5,18 +5,28 @@ formAtualizar.addEventListener("submit", (e)=>{
     e.preventDefault()
 
     let idProduto = document.getElementById("idProduto").value
-    let quantidade_atual = document.getElementById("quantidade_atual").value
-    let quantidade_minima = document.getElementById("quantidade_minima").value
+    let quantidade_atual = Number(document.getElementById("quantidade_atual").value)
+    let quantidade_minima = Number(document.getElementById("quantidade_minima").value)
 
-    let valores = {
-        idProduto: idProduto,
-        quantidade_atual: quantidade_atual,
-        quantidade_minima: quantidade_minima
+    let valores = {}
+
+    if(quantidade_minima == 0){
+        valores = {
+            codEstoque: idProduto,
+            quantidade_atual: quantidade_atual
+        }
+    } else {
+        valores = {
+            codEstoque: idProduto,
+            quantidade_atual: quantidade_atual,
+            quantidade_minima: quantidade_minima
+        }
     }
-
-    fetch("http://localhost:3000/estoque/atualizar", {
+    
+    fetch("http://localhost:4000/estoque/atualizar", {
         method: "PUT",
         headers: {
+            'Authorization': `Bearer ${token}`,
             "Content-Type":"application/json"
         },
         body: JSON.stringify(valores)

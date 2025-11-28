@@ -31,7 +31,7 @@ formCadastrar.addEventListener("submit", (e)=>{
         quantidade_minima: quantidade_minima
     }
 
-    fetch("http://localhost:3000/produto/cadastrar", {
+    fetch("http://localhost:4000/produto/cadastrar", {
         method: "POST",
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -46,8 +46,7 @@ formCadastrar.addEventListener("submit", (e)=>{
         return resp.json()
     })
     .then((data)=>{
-        console.log(data);
-        
+        console.log(data)
         let produto = data.produto.produto
         let estoque = data.estoque.estoque
         if(data.error){
@@ -71,6 +70,7 @@ formCadastrar.addEventListener("submit", (e)=>{
         `
     })
     .catch((err)=>{
+        res.style.color = "red"
         res.innerHTML = `Ocorreu um erro ao fazer o cadastro do produto, tente novamente mais tarde.`
         console.error("Ocorreu um erro ao cadastrar o produto: ", err)
     })

@@ -18,6 +18,7 @@ formDeletar.addEventListener("submit", (e) => {
     fetch(`http://localhost:3000/produto/deletar/${codProduto}`, {
         method: "DELETE",
         headers: {
+            'Authorization': `Bearer ${token}`,
             "Content-Type": "application/json"
         }
     })

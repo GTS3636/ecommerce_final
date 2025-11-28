@@ -1,8 +1,6 @@
 // frontend/checkout.js
 
-const productsGrid = document.querySelector('.products-grid');
-const searchInput = document.querySelector('.search-input');
-const searchBtn = document.querySelector('.search-btn');
+const productsGrid = document.querySelector('.products-grid')
 
 // Estado da aplicação
 let allProducts = [];
@@ -57,7 +55,7 @@ function renderProducts(products) {
             
             <div class="product-image">
                 ${product.imagem_url 
-                    ? `<img src="${product.imagem_url}" alt="${escapeHtml(product.nome)}" onerror="this.src='https://via.placeholder.com/200?text=Sem+Imagem'">` 
+                    ? `<img src="${product.imagem_url}" alt="${escapeHtml(product.nome)}">` 
                     : `<div class="no-image"><i class="fas fa-image"></i></div>`
                 }
             </div>

@@ -9,6 +9,7 @@ function listarPedidos() {
     fetch("http://localhost:3000/pedido/listar", {
         method: "GET",
         headers: {
+            'Authorization': `Bearer ${token}`,
             "Content-Type": "application/json"
         }
     })

@@ -11,6 +11,7 @@ function listarProdutos() {
     fetch("http://localhost:3000/produto/listar", {
         method: "GET",
         headers: {
+            'Authorization': `Bearer ${token}`,
             "Content-Type": "application/json"
         }
     })

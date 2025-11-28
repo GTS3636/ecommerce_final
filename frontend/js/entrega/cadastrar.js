@@ -33,6 +33,7 @@ formCadastrar.addEventListener("submit", (e)=>{
     fetch("http://localhost:3000/entrega/cadastrar", {
         method: "POST",
         headers: {
+            'Authorization': `Bearer ${token}`,
             "Content-Type":"application/json"
         },
         body: JSON.stringify(valores)

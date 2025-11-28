@@ -14,6 +14,7 @@ formConsultar.addEventListener("submit", (e) => {
     fetch(`http://localhost:3000/produto/consultar/${codProduto}`, {
         method: "GET",
         headers: {
+            'Authorization': `Bearer ${token}`,
             "Content-Type": "application/json"
         }
     })

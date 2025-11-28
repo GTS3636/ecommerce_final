@@ -36,6 +36,7 @@ formAtualizar.addEventListener("submit", (e)=>{
     fetch("http://localhost:3000/produto/atualizar", {
         method: "PUT",
         headers: {
+            'Authorization': `Bearer ${token}`,
             "Content-Type":"application/json"
         },
         body: JSON.stringify(valores)
