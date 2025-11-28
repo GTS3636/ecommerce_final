@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Carrinho de Compras</title>
+    <link rel="stylesheet" href="styleCheckout.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="checkout.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="admin-page">
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-btn" id="closeBtn">×</button>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html" class="sidebar-link"><i class="fas fa-home"></i> Página Inicial</a></li>
+                <li><a href="produtos.html" class="sidebar-link"><i class="fas fa-box"></i> Produtos</a></li>
+                <li><a href="checkout.html" class="sidebar-link"><i class="fas fa-shopping-cart"></i> Carrinho</a></li>
+                <li><a href="perfil.html" class="sidebar-link"><i class="fas fa-user"></i> Meu Perfil</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-text">
+                    <div id="userName">Usuário</div>
+                    <small id="userEmail">email@exemplo.com</small>
+                </div>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="logo">LOJA</div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn" onclick="window.location.href='checkout.html'">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cartCount">0</span>
+            </button>
+            <button class="header-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="checkout-container">
+        <div class="checkout-content">
+            <!-- Carrinho -->
+            <div class="cart-section">
+                <h2 class="section-title">
+                    <i class="fas fa-shopping-cart"></i> Seu Carrinho
+                </h2>
+                <div id="cartItems" class="cart-items">
+                    <!-- Items serão inseridos aqui via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Resumo do Pedido -->
+            <div class="order-summary">
+                <h2 class="section-title">
+                    <i class="fas fa-file-invoice-dollar"></i> Resumo do Pedido
+                </h2>
+                <div class="summary-content">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">R$ 0,00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Frete:</span>
+                        <span id="shipping">R$ 0,00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="total">R$ 0,00</span>
+                    </div>
+                    <button class="btnFunction checkout-btn" onclick="finalizarCompra()">
+                        <i class="fas fa-check-circle"></i> Finalizar Compra
+                    </button>
+                    <button class="btnFunction clear-cart-btn" onclick="limparCarrinho()">
+                        <i class="fas fa-trash"></i> Limpar Carrinho
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        </div>
+        <div class="footer-text">
+            © 2024 LOJA. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script src="checkout.js"></script>
+</body>
+</html>
