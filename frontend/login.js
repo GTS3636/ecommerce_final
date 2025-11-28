@@ -11,7 +11,7 @@ loginForm.addEventListener("submit", (e)=>{
         senha: senha
     }
 
-    fetch("http://localhost:4000/login", {
+    fetch("http://localhost:3000/login", {
         method:"POST",
         headers:{
             "Content-Type":"application/json"

@@ -1,91 +1,136 @@
-let res = document.getElementById("res")
-let resgistrarForm = document.getElementById("resgistrarForm")
+const res = document.getElementById("res");
+const registrarForm = document.getElementById("registrarForm")
 
-resgistrarForm.addEventListener("submit", async (e)=>{
-    e.preventDefault()
-    let nome = document.getElementById("nome").value
-    let email = document.getElementById("email").value
-    let senha = document.getElementById("senha").value
-    let telefone = document.getElementById("telefone").value
-    let cpf = document.getElementById("senha").value
-    let identidade = document.getElementById("identidade").value
+// Função auxiliar para mostrar mensagens
+function mostrarMensagem(mensagem, tipo = "erro") {
+    res.style.color = tipo === "erro" ? "red" : "green"
+    res.innerHTML = mensagem
+}
 
-    let valores = {
-        nome:nome,
-        email: email,
-        senha: senha,
-        telefone: telefone,
-        cpf: cpf,
-        identidade: identidade
+// Função auxiliar para requisições
+async function fazerRequisicao(url, dados) {
+    console.log('Enviando requisição para:', url)
+    console.log('Dados:', dados)
+    
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+    });
+
+    const responseData = await response.json()
+    console.log('Resposta do servidor:', responseData)
+
+    if (!response.ok) {
+        const errorMsg = responseData.error || `Erro HTTP: ${response.status}`
+        throw new Error(errorMsg)
     }
 
-    const responseCad = await fetch("http://localhost:4000/usuario/cadastrar", {
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify(valores)
-    })
-    .then(resp=>{
-        if(!resp.ok){
-            throw new Error("Erro ao requisitar os dados.")
-        }
-        return resp.json()
-    })
-    .then((data)=>{
-        console.log(data)
-        
-        if(data.error){
-            res.style.color = "red"
-            return res.innerHTML = `${data.error}`
-        }
-    })
-    .catch((err)=>{
-        res.style.color = "red"
-        console.error("Ocorreu um erro ao efetuar o cadastro do usuário: ", err)        
-        return res.innerHTML = "Ocorreu um erro ao efetuar o cadastro do usuário, tente novamente mais tarde."
-    })
+    return responseData
+}
 
-    if(!responseCad){
+function validarFormulario(valores) {
+    const { nome, email, senha, telefone, cpf } = valores
+    
+    if (!nome || !email || !senha || !telefone || !cpf) {
+        return "Todos os campos são obrigatórios."
+    }
+    
+    if (senha.length < 6) {
+        return "A senha deve ter no mínimo 6 caracteres."
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+        return "Email inválido."
+    }
+    
+    return null
+}
+
+registrarForm.addEventListener("submit", async (e) => {
+    e.preventDefault()
+    
+    const valores = {
+        nome: document.getElementById("nome").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        senha: document.getElementById("senha").value,
+        telefone: document.getElementById("telefone").value.trim(),
+        cpf: document.getElementById("cpf").value.trim(),
+        identidade: document.getElementById("identidade").value.trim()
+    }
+
+    const erroValidacao = validarFormulario(valores)
+    if (erroValidacao) {
+        mostrarMensagem(erroValidacao)
         return
     }
 
-    fetch("http://localhost:4000/login", {
-        method: "POST",
-        headers: {
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify({
-            email: email,
-            senha: senha
-        })
-    })
-    .then(resp=>{
-        if(!resp.ok){
-            throw new Error("Ocorreu um erro ao fazer a requisição.")
-        }
-        return resp.json()
-    })
-    .then((data)=>{
+    const submitBtn = registrarForm.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = true
+        mostrarMensagem("Processando...", "info")
+    }
 
-        if(data.error){
-            res.style.color = "red"
-            return res.innerHTML = `${data.error}`
+    try {
+        // Cadastro
+        const dataCadastro = await fazerRequisicao(
+            "http://localhost:3000/usuario/cadastrar",
+            valores
+        )
+
+        if (dataCadastro.error) {
+            mostrarMensagem(dataCadastro.error)
+            return
         }
 
-        localStorage.setItem("token", data.token)
-        localStorage.setItem("nome", data.nome)
-        localStorage.setItem("tipo", data.tipo)
+        // Login automático
+        const dataLogin = await fazerRequisicao(
+            "http://localhost:3000/login",
+            {
+                email: valores.email,
+                senha: valores.senha
+            }
+        )
 
-        res.style.color = "green"
-        res.innerHTML = `<h3>Login efetuado com sucesso!</h3>`
-        setTimeout(()=>{
+        if (dataLogin.error) {
+            mostrarMensagem(dataLogin.error)
+            return
+        }
+
+        localStorage.setItem("token", dataLogin.token)
+        localStorage.setItem("nome", dataLogin.nome)
+        localStorage.setItem("tipo", dataLogin.tipo)
+
+        mostrarMensagem("<h3>Cadastro e login efetuados com sucesso!</h3>", "sucesso")
+        
+        registrarForm.reset()
+        
+        setTimeout(() => {
             location.href = "./index.html"
-        },2000)
-    })
-    .catch((err)=>{
-        res.style.color = "red"
-        res.innerHTML = "Ocorreu um erro ao efetuar o login, tente novamente mais tarde."
-        console.error("Ocorreu um erro ao efetuar o login: ", err)        
-    })
+        }, 2000)
+
+    } catch (erro) {
+        console.error("Erro completo:", erro)
+        let mensagemErro = "Ocorreu um erro ao processar sua solicitação."
+        
+        if (erro.message.includes("400")) {
+            mensagemErro = "Dados inválidos. Verifique se todos os campos estão preenchidos corretamente."
+        } else if (erro.message.includes("403")) {
+            mensagemErro = "CPF inválido ou já cadastrado."
+        } else if (erro.message.includes("500")) {
+            mensagemErro = "Erro interno do servidor. Tente novamente mais tarde."
+        } else if (erro.message) {
+            mensagemErro = erro.message
+        }
+        
+        mostrarMensagem(mensagemErro)
+    } finally {
+        // Reabilitar botão
+        if (submitBtn) {
+            submitBtn.disabled = false
+        }
+    }
 })

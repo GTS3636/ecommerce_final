@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../../auth.js" defer></script>
+    <script src="../../search.js" defer></script>
 </head>
-<body>
+<body class="admin-page">
     <!-- Sidebar Menu -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -27,7 +28,7 @@
             <a href="../entrega/entregaIndex.html" class="sidebar-link">
                 <i class="fas fa-truck"></i> Entregas
             </a>
-            <a href="../estoque/estoqueIndex.html" class="sidebar-link">
+            <a href="./estoqueIndex.html" class="sidebar-link">
                 <i class="fas fa-warehouse"></i> Estoque
             </a>
             <a href="../pedido/pedidoIndex.html" class="sidebar-link">
@@ -64,12 +65,12 @@
             <h1 class="logo">Lojas Tijucanas</h1>
         </div>
 
-        <div class="header-right">
-            <button class="header-btn">
-                <i class="fas fa-arrow-right-to-bracket"></i> Login
+        <div class="header-right" id="header-right">
+            <button class="header-btn" id="loginUser">
+                <i class="fas fa-arrow-right-to-bracket"></i> <a href="../../login.html">Login</a>
             </button>
-            <button class="header-btn">
-                <i class="fas fa-user-plus"></i> Sign Up
+            <button class="header-btn" id="registerUser">
+                <i class="fas fa-user-plus"></i> <a href="../../register.html">Sign Up</a>
             </button>
         </div>
     </header>

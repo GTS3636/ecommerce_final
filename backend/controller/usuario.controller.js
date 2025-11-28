@@ -5,10 +5,10 @@ const { validaCPF } = require("../utils/validaCPF")
 const cadastrar = async (req,res) => {
     const valores = req.body
 
-    // Campos obrigatórios
+    // Campos obrigatórios (exceto tipo_usuario que tem valor padrão)
     const camposObrigatorios = [
         'nome', 'email', 'senha', 'telefone', 
-        'cpf', 'tipo_usuario'
+        'cpf'
     ];
     
     // Validação dos campos obrigatórios
@@ -19,6 +19,11 @@ const cadastrar = async (req,res) => {
             error: "Todos os campos são obrigatórios!",
             camposFaltando
         })
+    }
+    
+    // Usar valor padrão para tipo_usuario se não fornecido
+    if (!valores.tipo_usuario) {
+        valores.tipo_usuario = 'CLIENTE'
     }
 
     try{

@@ -12,7 +12,10 @@ router.post("/cadastrar",  authMiddleware, adminMiddleware, produtoController.ca
 router.put("/atualizar",  authMiddleware, adminMiddleware, produtoController.atualizar)
 
 // Pronto
-router.get("/listar", produtoController.listar)
+router.get("/listar", authMiddleware, adminMiddleware, produtoController.listar)
+
+// Endpoint para homepage - apenas produtos ativos com estoque > 0
+router.get("/homepage", produtoController.listarHomepage)
 
 // Pronto
 router.get("/consultar/:id", produtoController.consultar)

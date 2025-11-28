@@ -2,7 +2,7 @@ require('dotenv').config()
 const app = require('./server/app')
 const conn = require('./db/conn')
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 3000
 const HOST = process.env.HOST || 'localhost'
 
 // Testa conexão, sincroniza e sobe o servidor

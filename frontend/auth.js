@@ -78,7 +78,7 @@ function setupLogout() {
             let confirmLogout = confirm("Você tem certeza que deseja fazer logout?")
             if (confirmLogout){
                 localStorage.clear()
-                location.href = "./index.html"
+                location.href = indexPath
             }
         })
     }
@@ -88,11 +88,13 @@ function setupUserInfo() {
     const nomeUser = localStorage.getItem("nome")
     const user_text = document.getElementById("user-text")
     if (nomeUser && user_text){
+        // Extrair apenas o primeiro nome para evitar texto muito longo
+        const primeiroNome = nomeUser.split(' ')[0]
         user_text.textContent = ``
-        user_text.textContent = `Olá, ${nomeUser}!`
+        user_text.textContent = `Olá, ${primeiroNome}!`
     }
     if((tipoUsuario && user_text)&&(tipoUsuario === "ADMIN")){
-        user_text.textContent += ` Sua permissão: ${tipoUsuario}!`
+        user_text.textContent += ` (${tipoUsuario})`
     }
 }
 

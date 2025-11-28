@@ -1,6 +1,9 @@
 const Produto = require('../models/Produto')
 const Estoque = require("../models/Estoque")
 
+// Importar as associações para garantir que estão carregadas
+require('../models/rel')
+
 const cadastrar = async (req, res) => {
     const valores = req.body
     
@@ -109,9 +112,36 @@ const deletar = async (req,res) => {
         res.status(500).json({error: 'Erro ao fazer a deleção do produto, tente novamente mais tarde!'})
     }
 }
+
+const listarHomepage = async (req, res) => {
+    try {
+        // Buscar produtos ativos com estoque > 0, incluindo dados do estoque
+        const dados = await Produto.findAll({
+            where: {
+                ativo: true
+            },
+            include: [{
+                model: Estoque,
+                as: 'estoqueProduto',
+                where: {
+                    quantidade_atual: {
+                        [require('sequelize').Op.gt]: 0
+                    }
+                }
+                // Não precisa de 'required: true' pois todo produto tem estoque automaticamente
+            }],
+            order: [['codProduto', 'ASC']]
+        })
+        return res.status(201).json(dados)
+    } catch (err) {
+        console.error('Erro ao listar produtos da homepage:', err)
+        return res.status(500).json({error: 'Erro ao listar produtos da homepage. Tente novamente mais tarde.'})
+    }
+}
 module.exports = { 
     cadastrar, 
     listar, 
+    listarHomepage,
     atualizar, 
     deletar, 
     consultar 
