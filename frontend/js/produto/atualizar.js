@@ -41,7 +41,7 @@ formAtualizar.addEventListener("submit", (e)=>{
         body: JSON.stringify(valores)
     })
     .then(resp=>{
-        if(!resp){
+        if(!resp.ok){
             throw new Error("Ocorreu um erro ao pegar a requisição.")
         }
         return resp.json()

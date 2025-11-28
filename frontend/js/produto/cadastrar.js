@@ -40,18 +40,20 @@ formCadastrar.addEventListener("submit", (e)=>{
         body: JSON.stringify(valores)
     })
     .then(resp=>{
-        if(!resp){
+        if(!resp.ok){
             throw new Error("Ocorreu um erro ao pegar a requisição.")
         }
         return resp.json()
     })
     .then((data)=>{
+        console.log(data);
+        
         let produto = data.produto.produto
         let estoque = data.estoque.estoque
-        if(data.erro){
+        if(data.error){
             res.style.color = "red"
-            return res.innerHTML = `${data.erro}`
-        }       
+            return res.innerHTML = `${data.error}`
+        }
 
         res.style.color = "green"
         res.innerHTML = `
