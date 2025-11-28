@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos - Acompanhamento</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="stylePedidos.css">
+    <script src="./js/other/auth.js" defer></script>
+    <script src="./js/other/meusPedidos.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="admin-page">
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-btn" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="./html/produto/produtoIndex.html" class="sidebar-link">
+                <i class="fas fa-box"></i> Produtos
+            </a>
+            <a href="./html/usuario/usuarioIndex.html" class="sidebar-link">
+                <i class="fas fa-users"></i> Usuários
+            </a>
+            <a href="./html/entrega/entregaIndex.html" class="sidebar-link">
+                <i class="fas fa-truck"></i> Entregas
+            </a>
+            <a href="./html/estoque/estoqueIndex.html" class="sidebar-link">
+                <i class="fas fa-warehouse"></i> Estoque
+            </a>
+            <a href="./html/pedido/pedidoIndex.html" class="sidebar-link">
+                <i class="fas fa-shopping-bag"></i> Pedidos
+            </a>
+            <a href="./index.html" class="sidebar-link">
+                <i class="fa fa-home"></i> Home
+            </a>
+        </nav>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left" id="header-left">
+            <div id="header-left-menu">
+
+            </div>
+            <div class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-text" id="user-text">
+                    <p>Faça Login ou</p>
+                    <p>Cadastre-se para</p>
+                    <p>acessar sua conta</p>
+                </div><br>
+                <a href="./index.html">
+                    <i class="fa fa-home">Voltar</i>
+                </a>
+            </div>
+        </div>
+        <div class="header-center">
+            <h1 class="logo">Lojas Tijucanas</h1>
+        </div>
+        <div class="header-right" id="header-right">
+            <div class="cart-info" style="margin-right: 15px;">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cartCount">0</span> itens
+            </div>
+            <button class="header-btn" id="loginUser">
+                <i class="fas fa-arrow-right-to-bracket"></i> <a href="./login.html">Login</a>
+            </button>
+            <button class="header-btn" id="registerUser">
+                <i class="fas fa-user-plus"></i> <a href="./register.html">Sign Up</a>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="orders-container">
+        <div class="orders-header">
+            <h1><i class="fas fa-box-open"></i> Meus Pedidos</h1>
+            <p>Acompanhe o status e histórico dos seus pedidos</p>
+        </div>
+
+        <div id="ordersContent" class="orders-grid">
+            <!-- Pedidos serão inseridos aqui via JavaScript -->
+            <!-- Exemplo de estrutura de pedidos em grid -->
+            <div class="order-card-compact">
+                <div class="order-card-header">
+                    <div class="order-info-compact">
+                        <span class="order-number-compact">#12345</span>
+                        <span class="order-date-compact">27/11/2025</span>
+                    </div>
+                    <span class="order-status status-enviado">
+                        <i class="fas fa-shipping-fast"></i> Em Trânsito
+                    </span>
+                </div>
+                <div class="order-card-body">
+                    <div class="order-preview-items">
+                        <img src="https://via.placeholder.com/80" alt="Produto" class="preview-image">
+                        <img src="https://via.placeholder.com/80" alt="Produto" class="preview-image">
+                        <div class="more-items">+1</div>
+                    </div>
+                    <div class="order-summary-compact">
+                        <div class="summary-item">
+                            <i class="fas fa-box"></i>
+                            <span>3 itens</span>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span class="total-value">R$ 249,80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card-footer">
+                    <button class="btn-view-order" data-pedido-id="12345">
+                        <i class="fas fa-eye"></i> Ver Detalhes
+                    </button>
+
+                    <button class="btn-track-compact" data-pedido-id="12345">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="order-card-compact">
+                <div class="order-card-header">
+                    <div class="order-info-compact">
+                        <span class="order-number-compact">#12343</span>
+                        <span class="order-date-compact">20/11/2025</span>
+                    </div>
+                    <span class="order-status status-processando">
+                        <i class="fas fa-cog"></i> Processando
+                    </span>
+                </div>
+                <div class="order-card-body">
+                    <div class="order-preview-items">
+                        <img src="https://via.placeholder.com/80" alt="Produto" class="preview-image">
+                    </div>
+                    <div class="order-summary-compact">
+                        <div class="summary-item">
+                            <i class="fas fa-box"></i>
+                            <span>1 item</span>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span class="total-value">R$ 129,90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card-footer">
+                    <button class="btn-view-order" data-pedido-id="12343">
+                        <i class="fas fa-eye"></i> Ver Detalhes
+                    </button>
+
+                    <button class="btn-cancel-compact" data-pedido-id="12343">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <div id="orderModal" class="order-modal">
+                <div class="order-modal-overlay" onclick="fecharModal()"></div>
+
+                <div class="order-modal-content">
+
+                    <button class="order-modal-close" onclick="fecharModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    <div class="order-modal-body" id="orderModalBody">
+                        <!-- Conteúdo será preenchido pelo JS -->
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Mensagem para quando não houver pedidos -->
+            <!-- <div class="empty-orders">
+                <i class="fas fa-shopping-bag"></i>
+                <h2>Você ainda não fez nenhum pedido</h2>
+                <p>Explore nossa loja e encontre produtos incríveis!</p>
+                <a href="./index.html" class="btn-shop">
+                    <i class="fas fa-shopping-cart"></i> Começar a Comprar
+                </a>
+            </div> -->
+        </div>
+
+        <!-- Modal de Detalhes do Pedido -->
+        <div id="orderModal" class="order-modal">
+            <div class="order-modal-overlay" onclick="fecharModal()"></div>
+            <div class="order-modal-content">
+                <button class="order-modal-close" onclick="fecharModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="order-modal-body">
+                    <!-- Conteúdo do pedido detalhado -->
+                    <div class="order-detail-header">
+                        <h2>Pedido #12345</h2>
+                        <span class="order-status status-enviado">
+                            <i class="fas fa-shipping-fast"></i> Em Trânsito
+                        </span>
+                    </div>
+                    <p class="order-detail-date">Realizado em 27/11/2025 às 14:30</p>
+
+                    <div class="order-timeline">
+                        <div class="timeline-item active">
+                            <div class="timeline-content">
+                                <h4><i class="fas fa-check-circle"></i> Pedido Confirmado</h4>
+                                <p>27/11/2025 às 14:30</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item active">
+                            <div class="timeline-content">
+                                <h4><i class="fas fa-box"></i> Em Preparação</h4>
+                                <p>27/11/2025 às 16:45</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item active">
+                            <div class="timeline-content">
+                                <h4><i class="fas fa-truck"></i> Enviado</h4>
+                                <p>28/11/2025 às 09:15</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4><i class="fas fa-home"></i> Entregue</h4>
+                                <p>Previsão: 30/11/2025</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-items">
+                        <h3><i class="fas fa-list"></i> Itens do Pedido</h3>
+                        <div class="item-row">
+                            <div class="item-info">
+                                <img src="https://via.placeholder.com/60" alt="Produto" class="item-image">
+                                <div class="item-details">
+                                    <h4>Nome do Produto</h4>
+                                    <p>Quantidade: 2</p>
+                                </div>
+                            </div>
+                            <div class="item-price">R$ 159,90</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-info">
+                                <img src="https://via.placeholder.com/60" alt="Produto" class="item-image">
+                                <div class="item-details">
+                                    <h4>Outro Produto</h4>
+                                    <p>Quantidade: 1</p>
+                                </div>
+                            </div>
+                            <div class="item-price">R$ 89,90</div>
+                        </div>
+                    </div>
+
+                    <div class="order-total">
+                        <span>Total do Pedido</span>
+                        <span>R$ 249,80</span>
+                    </div>
+
+                    <div class="order-actions">
+                        <button class="btn-action btn-track">
+                            <i class="fas fa-map-marker-alt"></i> Rastrear Pedido
+                        </button>
+                        <button class="btn-action btn-cancel">
+                            <i class="fas fa-times-circle"></i> Cancelar Pedido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p class="footer-text">Desenvolvido por Guilherme Tomaz Silva</p>
+    </footer>
+
+    <script>
+        // Script básico para carregar pedidos do usuário
+        document.addEventListener('DOMContentLoaded', function () {
+            // Aqui você implementaria a lógica para buscar os pedidos do usuário
+            // carregarPedidos();
+        });
+
+        function carregarPedidos() {
+            // Implementar busca de pedidos da API
+            // fetch('/api/pedidos/usuario')...
+        }
+
+        function rastrearPedido(pedidoId) {
+            // Implementar lógica de rastreamento
+            alert('Rastreando pedido #' + pedidoId);
+        }
+
+        function cancelarPedido(pedidoId) {
+            if (confirm('Tem certeza que deseja cancelar este pedido?')) {
+                // Implementar lógica de cancelamento
+                alert('Pedido #' + pedidoId + ' cancelado');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -31,7 +31,7 @@ formCadastrar.addEventListener("submit", (e)=>{
         quantidade_minima: quantidade_minima
     }
 
-    fetch("http://localhost:4000/produto/cadastrar", {
+    fetch("http://localhost:3000/produto/cadastrar", {
         method: "POST",
         headers: {
             'Authorization': `Bearer ${token}`,
