@@ -6,55 +6,74 @@
     <title>Checkout - Carrinho de Compras</title>
     <link rel="stylesheet" href="styleCheckout.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="auth.js" defer></script>
     <script src="checkout.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="admin-page">
     <!-- Overlay -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2>Menu</h2>
-            <button class="close-btn" id="closeBtn">×</button>
+            <button class="close-btn" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <nav class="sidebar-nav">
-            <ul>
-                <li><a href="index.html" class="sidebar-link"><i class="fas fa-home"></i> Página Inicial</a></li>
-                <li><a href="produtos.html" class="sidebar-link"><i class="fas fa-box"></i> Produtos</a></li>
-                <li><a href="checkout.html" class="sidebar-link"><i class="fas fa-shopping-cart"></i> Carrinho</a></li>
-                <li><a href="perfil.html" class="sidebar-link"><i class="fas fa-user"></i> Meu Perfil</a></li>
-            </ul>
+            <a href="./html/produto/produtoIndex.html" class="sidebar-link">
+                <i class="fas fa-box"></i> Produtos
+            </a>
+            <a href="./html/usuario/usuarioIndex.html" class="sidebar-link">
+                <i class="fas fa-users"></i> Usuários
+            </a>
+            <a href="./html/entrega/entregaIndex.html" class="sidebar-link">
+                <i class="fas fa-truck"></i> Entregas
+            </a>
+            <a href="./html/estoque/estoqueIndex.html" class="sidebar-link">
+                <i class="fas fa-warehouse"></i> Estoque
+            </a>
+            <a href="./html/pedido/pedidoIndex.html" class="sidebar-link">
+                <i class="fas fa-shopping-bag"></i> Pedidos
+            </a>
+            <a href="./index.html" class="sidebar-link">
+                <i class="fa fa-home"></i> Home
+            </a>
         </nav>
-    </aside>
+    </div>
 
     <!-- Header -->
     <header class="header">
-        <div class="header-left">
-            <button class="menu-btn" id="menuBtn">
-                <i class="fas fa-bars"></i>
-            </button>
+        <div class="header-left" id="header-left">
+            <div id="header-left-menu">
+
+            </div>
             <div class="user-info">
                 <div class="user-icon">
                     <i class="fas fa-user"></i>
                 </div>
-                <div class="user-text">
-                    <div id="userName">Usuário</div>
-                    <small id="userEmail">email@exemplo.com</small>
+                <div class="user-text" id="user-text">
+                    <p>Faça Login ou</p>
+                    <p>Cadastre-se para</p>
+                    <p>acessar sua conta</p>
                 </div>
             </div>
         </div>
         <div class="header-center">
-            <div class="logo">LOJA</div>
+            <h1 class="logo">Lojas Tijucanas</h1>
         </div>
-        <div class="header-right">
-            <button class="header-btn" onclick="window.location.href='checkout.html'">
+        <div class="header-right" id="header-right">
+            <div class="cart-info" style="margin-right: 15px;">
                 <i class="fas fa-shopping-cart"></i>
-                <span id="cartCount">0</span>
+                <span id="cartCount">0</span> itens
+            </div>
+            <button class="header-btn" id="loginUser">
+                <i class="fas fa-arrow-right-to-bracket"></i> <a href="./login.html">Login</a>
             </button>
-            <button class="header-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Sair
+            <button class="header-btn" id="registerUser">
+                <i class="fas fa-user-plus"></i> <a href="./register.html">Sign Up</a>
             </button>
         </div>
     </header>
@@ -105,12 +124,11 @@
     <footer class="footer">
         <div class="social-icons">
             <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
             <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
         </div>
-        <div class="footer-text">
-            © 2024 LOJA. Todos os direitos reservados.
-        </div>
+        <p class="footer-text">Desenvolvido por Guilherme Tomaz Silva</p>
+
     </footer>
 
     <script src="checkout.js"></script>
