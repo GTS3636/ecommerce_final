@@ -725,8 +725,6 @@ textarea {
     width: 100%;
     /* Ocupa toda a largura do container pai */
     padding: 12px;
-    /* Espaço interno confortável */
-    margin-bottom: 16px;
     /* Espaço entre os campos */
     border: 1px solid #ccc;
     /* Borda sutil cinza */

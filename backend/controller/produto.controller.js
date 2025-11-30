@@ -60,6 +60,21 @@ const atualizar = async (req, res) => {
     const valores = req.body
     console.log(valores)
     
+     // Campos obrigatórios
+    const camposObrigatorios = [
+        'codPedido'
+    ]
+    
+    // Validação dos campos obrigatórios com a função filter
+    const camposFaltando = camposObrigatorios.filter(campo => valores[campo] == null || valores[campo] === '')
+    
+    if (camposFaltando.length > 0) {
+        return res.status(400).json({ 
+            error: "Todos os campos são obrigatórios!",
+            camposFaltando 
+        })
+    }
+
     try {
         let ProdutoExist = await Produto.findByPk(valores.codProduto)
         if(!ProdutoExist){

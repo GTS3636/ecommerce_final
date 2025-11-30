@@ -18,6 +18,6 @@ router.get("/listar", authMiddleware, adminMiddleware, entregaController.listar)
 // 
 router.get("/consultar/:id", authMiddleware, adminMiddleware, entregaController.consultar)
 
-router.post("/frete", authMiddleware, entregaController.calcularFreteCheckout)
+router.post("/frete", entregaController.calcularFreteCheckout)
 
 module.exports = router

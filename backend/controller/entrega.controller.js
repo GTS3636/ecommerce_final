@@ -31,15 +31,15 @@ const cadastrar = async (req, res) => {
 
         const dadosData = {
             idPedido: valores.idPedido,
-            cep: VideoColorSpace.cep,
+            cep: valores.cep,
             logradouro: valores.logradouro,
-            bairro: valores.bairro,
+            bairro: dataCep.bairro,
             localidade: valores.localidade,
-            uf: valores.uf,
+            uf: dataCep.uf,
             numero: valores.numero,
             statusEntrega: valores.statusEntrega,
             complemento: valores.complemento ? valores.complemento : null,
-            dataEstimada: calcularDataEstimada(valores.uf)
+            dataEstimada: calcularDataEstimada(dataCep.uf)
         }
 
         const dataFormatada = formatarDataEstimada(dadosData.dataEstimada)

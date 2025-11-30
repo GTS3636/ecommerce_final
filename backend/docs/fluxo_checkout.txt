@@ -1,0 +1,9 @@
+Fluxo para cadastro de pedido no frontend
+
+1 - carrinho com alguns produtos inseridos
+2 - usuário entra na página de checkout
+    2.A - usuário clica em "Finalizar Compra"
+    2.B - usuário é levado para a página de pedidos do cliente
+3 - a página de pedidos do cliente mostra os pedidos em formato de tabela
+    3.A - os pedidos tem dados como status do pedido, data estimada, 
+          valor total, produtos do pedido e quantidade desses produtos.

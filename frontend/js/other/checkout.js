@@ -13,8 +13,7 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let allProducts = [];
 let productsGrid = null;
 
-// Constantes
-const SHIPPING_COST = 15.90; // Custo fixo de frete
+let SHIPPING_COST
 
 // ================================
 // FUNÇÕES COMPARTILHADAS (ambas as páginas)
@@ -24,13 +23,13 @@ const SHIPPING_COST = 15.90; // Custo fixo de frete
 function updateCartBadge() {
     const cartBtn = document.querySelector('.cart-btn');
     const cartCountHeader = document.getElementById('cartCount');
-    
+
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    
+
     // Atualizar badge no botão do carrinho (footer)
     if (cartBtn) {
         const existingBadge = cartBtn.querySelector('.cart-badge');
-        
+
         if (totalItems > 0) {
             if (existingBadge) {
                 existingBadge.textContent = totalItems;
@@ -44,7 +43,7 @@ function updateCartBadge() {
             existingBadge.remove();
         }
     }
-    
+
     // Atualizar contador no header (checkout.html)
     if (cartCountHeader) {
         cartCountHeader.textContent = totalItems;
@@ -54,7 +53,7 @@ function updateCartBadge() {
 // Adicionar produto ao carrinho
 function addToCart(productId) {
     const productCard = document.querySelector(`[data-product-id="${productId}"]`);
-    
+
     if (!productCard) {
         alert('Erro ao adicionar produto ao carrinho');
         return;
@@ -84,7 +83,7 @@ function addToCart(productId) {
     // Salvar carrinho no localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartBadge();
-    
+
     // Animação visual
     productCard.classList.add('added-to-cart');
     setTimeout(() => productCard.classList.remove('added-to-cart'), 600);
@@ -98,6 +97,7 @@ function escapeHtml(text) {
 }
 
 function formatPrice(price) {
+    if (typeof price === "string") return
     return parseFloat(price).toFixed(2).replace('.', ',');
 }
 
@@ -114,9 +114,9 @@ function showNotification(message, type = 'info') {
         <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
         <span>${message}</span>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     setTimeout(() => notification.classList.add('show'), 10);
     setTimeout(() => {
         notification.classList.remove('show');
@@ -181,10 +181,10 @@ if (isIndexPage()) {
                  data-product-description="${escapeHtml(product.descricao || '')}">
                 
                 <div class="product-image">
-                    ${product.imagem_url 
-                        ? `<img src="${product.imagem_url}" alt="${escapeHtml(product.nome)}">` 
-                        : `<div class="no-image"><i class="fas fa-image"></i></div>`
-                    }
+                    ${product.imagem_url
+                ? `<img src="${product.imagem_url}" alt="${escapeHtml(product.nome)}">`
+                : `<div class="no-image"><i class="fas fa-image"></i></div>`
+            }
                 </div>
                 
                 <div class="product-info">
@@ -194,10 +194,10 @@ if (isIndexPage()) {
                     </p>
                     <p class="product-price">R$ ${formatPrice(product.preco)}</p>
                     
-                    ${product.descricao 
-                        ? `<p class="product-description">${truncateText(escapeHtml(product.descricao), 80)}</p>` 
-                        : ''
-                    }
+                    ${product.descricao
+                ? `<p class="product-description">${truncateText(escapeHtml(product.descricao), 80)}</p>`
+                : ''
+            }
                 </div>
                 
                 <div class="product-actions">
@@ -215,7 +215,7 @@ if (isIndexPage()) {
     // Ver detalhes do produto
     function viewProductDetails(productId) {
         const product = allProducts.find(p => p.codProduto === productId);
-        
+
         if (!product) {
             alert('Produto não encontrado');
             return;
@@ -233,10 +233,10 @@ if (isIndexPage()) {
                 
                 <div class="modal-body">
                     <div class="modal-image">
-                        ${product.imagem_url 
-                            ? `<img src="${product.imagem_url}" alt="${escapeHtml(product.nome)}">` 
-                            : `<div class="no-image-large"><i class="fas fa-image"></i></div>`
-                        }
+                        ${product.imagem_url
+                ? `<img src="${product.imagem_url}" alt="${escapeHtml(product.nome)}">`
+                : `<div class="no-image-large"><i class="fas fa-image"></i></div>`
+            }
                     </div>
                     
                     <div class="modal-info">
@@ -246,25 +246,25 @@ if (isIndexPage()) {
                         </p>
                         <p class="modal-price">R$ ${formatPrice(product.preco)}</p>
                         
-                        ${product.descricao 
-                            ? `<div class="modal-description">
+                        ${product.descricao
+                ? `<div class="modal-description">
                                 <h3>Descrição</h3>
                                 <p>${escapeHtml(product.descricao)}</p>
-                               </div>` 
-                            : ''
-                        }
+                               </div>`
+                : ''
+            }
                         
                         ${Object.keys(product.especificacoes || {}).length > 0
-                            ? `<div class="modal-specifications">
+                ? `<div class="modal-specifications">
                                 <h3>Especificações</h3>
                                 <ul>
                                     ${Object.entries(product.especificacoes)
-                                        .map(([key, value]) => `<li><strong>${escapeHtml(key)}:</strong> ${escapeHtml(String(value))}</li>`)
-                                        .join('')}
+                    .map(([key, value]) => `<li><strong>${escapeHtml(key)}:</strong> ${escapeHtml(String(value))}</li>`)
+                    .join('')}
                                 </ul>
                                </div>`
-                            : ''
-                        }
+                : ''
+            }
                         
                         <button class="btn-add-cart-modal" onclick="addToCart(${product.codProduto}); closeProductModal();">
                             <i class="fas fa-shopping-cart"></i> Adicionar ao Carrinho
@@ -273,7 +273,7 @@ if (isIndexPage()) {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
         setTimeout(() => modal.classList.add('active'), 10);
     }
@@ -291,20 +291,20 @@ if (isIndexPage()) {
     function searchProducts() {
         const searchInput = document.querySelector('.search-input');
         if (!searchInput) return;
-        
+
         const searchTerm = searchInput.value.toLowerCase().trim();
-        
+
         if (!searchTerm) {
             renderProducts(allProducts);
             return;
         }
-        
-        const filteredProducts = allProducts.filter(product => 
+
+        const filteredProducts = allProducts.filter(product =>
             product.nome.toLowerCase().includes(searchTerm) ||
             product.categoria.toLowerCase().includes(searchTerm) ||
             (product.descricao && product.descricao.toLowerCase().includes(searchTerm))
         );
-        
+
         renderProducts(filteredProducts);
     }
 
@@ -366,6 +366,36 @@ if (isCheckoutPage()) {
         updateCartBadge();
     }
 
+    let calcularFrete = document.getElementById("calcularFrete")
+
+    calcularFrete.addEventListener("click", async (e)=>{
+        e.preventDefault(e)
+        let cep = document.getElementById("cep").value
+
+        if(!cep || cep == ""){
+            return alert("É necessário informar um CEP!")
+        }
+
+        const responseCep = await fetch(`https://viacep.com.br/ws/${cep}/json/`,{headers: {'Authorization': `Bearer ${token}`}})
+        const dataCep = await responseCep.json()
+
+        if (dataCep.erro) {
+            return res.status(400).json({ error: "O CEP informado é inválido." })
+        }
+
+        let valores = {
+            uf: dataCep.uf
+        }
+        const response = await fetch("http://localhost:3000/entrega/frete", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(valores)
+        })
+        const data = await response.json()
+
+        SHIPPING_COST = data.valorFrete
+        updateOrderSummary()
+    })
+
     // Carregar carrinho do localStorage
     function loadCart() {
         cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -394,10 +424,10 @@ if (isCheckoutPage()) {
         cartItemsContainer.innerHTML = cart.map(item => `
             <div class="cart-item" data-product-id="${item.id}">
                 <div class="cart-item-image">
-                    ${item.image 
-                        ? `<img src="${item.image}" alt="${escapeHtml(item.name)}">` 
-                        : `<div class="no-image"><i class="fas fa-image"></i></div>`
-                    }
+                    ${item.image
+                ? `<img src="${item.image}" alt="${escapeHtml(item.name)}">`
+                : `<div class="no-image"><i class="fas fa-image"></i></div>`
+            }
                 </div>
                 
                 <div class="cart-item-details">
@@ -439,23 +469,23 @@ if (isCheckoutPage()) {
     // Atualizar quantidade de um produto
     function updateQuantity(productId, newQuantity) {
         const quantity = parseInt(newQuantity);
-        
+
         if (quantity <= 0) {
             removeFromCart(productId);
             return;
         }
 
         const productIndex = cart.findIndex(item => item.id === productId);
-        
+
         if (productIndex !== -1) {
             cart[productIndex].quantity = quantity;
             localStorage.setItem('cart', JSON.stringify(cart));
-            
+
             // Atualizar apenas o item modificado
             renderCartItems();
             updateOrderSummary();
             updateCartBadge();
-            
+
             showNotification('Quantidade atualizada!', 'success');
         }
     }
@@ -463,16 +493,16 @@ if (isCheckoutPage()) {
     // Remover produto do carrinho
     function removeFromCart(productId) {
         const productIndex = cart.findIndex(item => item.id === productId);
-        
+
         if (productIndex !== -1) {
             const productName = cart[productIndex].name;
             cart.splice(productIndex, 1);
             localStorage.setItem('cart', JSON.stringify(cart));
-            
+
             renderCartItems();
             updateOrderSummary();
             updateCartBadge();
-            
+
             showNotification(`${productName} removido do carrinho!`, 'info');
         }
     }
@@ -480,16 +510,31 @@ if (isCheckoutPage()) {
     // Atualizar resumo do pedido
     function updateOrderSummary() {
         if (!subtotalElement || !shippingElement || !totalElement) return;
-        
-        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const shipping = cart.length > 0 ? SHIPPING_COST : 0;
-        const total = subtotal + shipping;
-        
-        subtotalElement.textContent = `R$ ${formatPrice(subtotal)}`;
-        shippingElement.textContent = `R$ ${formatPrice(shipping)}`;
-        totalElement.textContent = `R$ ${formatPrice(total)}`;
 
-        // Atualizar também no header se existir
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        // Sempre atualiza o subtotal
+        subtotalElement.textContent = `R$ ${formatPrice(subtotal)}`;
+
+        // Verifica se há itens no carrinho
+        if (cart.length > 0) {
+            const shipping = SHIPPING_COST;
+            
+            if(typeof shipping !== "number"){
+                const total = subtotal
+                totalElement.textContent = `R$ ${formatPrice(total)}`;
+                shippingElement.textContent = "Digite o seu CEP";
+            } else {
+                const total = subtotal + shipping;
+                totalElement.textContent = `R$ ${formatPrice(total)}`;
+                shippingElement.textContent = `R$ ${formatPrice(shipping)}`;
+            }
+        } else {
+            shippingElement.textContent = "Digite o seu CEP.";
+            totalElement.textContent = `R$ ${formatPrice(subtotal)}`;
+        }
+
+        // Atualizar contador no header
         if (cartCountElement) {
             cartCountElement.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
         }
@@ -497,30 +542,84 @@ if (isCheckoutPage()) {
 
     // Finalizar compra
     function finalizarCompra() {
+        let cep = document.getElementById("cep").value
+
+        if(!cep || cep == ""){
+            return alert("É necessário informar um CEP para a entrega do pedido!")
+        }
+
         if (cart.length === 0) {
             showNotification('Adicione produtos ao carrinho primeiro!', 'error');
             return;
         }
 
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + SHIPPING_COST;
-        
-        if (confirm(`Confirmar pedido?\n\nTotal: R$ ${formatPrice(total)}\n\nVocê será redirecionado para a página de pagamento.`)) {
-            // Aqui você pode implementar a lógica de finalização
-            // Por enquanto, apenas limpa o carrinho e mostra mensagem
-            
+        // Verificar se usuário está logado
+        if (!token) {
+            showNotification('Você precisa estar logado para finalizar a compra!', 'error');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+            return;
+        }
+
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const total = subtotal + SHIPPING_COST;
+
+        if (confirm(`Confirmar pedido?\n\nTotal: R$ ${formatPrice(total)}\n\nVocê será redirecionado para a página de pedidos.`)) {
+            // Chamar API para criar pedido
+            criarPedido(subtotal, total);
+        }
+    }
+
+    // Criar pedido na API
+    async function criarPedido(subtotal, total, cep) {
+        try {
+            // Preparar dados do pedido
+            const itens = cart.map(item => ({
+                idProduto: item.id,
+                quantidade: item.quantity,
+                precoUnitario: item.price,
+                valorTotalItem: item.price * item.quantity
+            }));
+
+            const pedidoData = {
+                itens: itens,
+                valorSubtotal: subtotal,
+                valorFrete: SHIPPING_COST,
+                valorTotal: total,
+                uf: 'SP'
+            };
+
+            const response = await fetch('http://localhost:3000/pedido/cadastrar', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(pedidoData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erro ao criar pedido');
+            }
+
+            const result = await response.json();
+
+            showNotification('Pedido criado com sucesso!', 'success');
+
+            // Limpar carrinho
             localStorage.removeItem('cart');
             cart = [];
-            
-            renderCartItems();
-            updateOrderSummary();
-            updateCartBadge();
-            
-            showNotification('Pedido finalizado com sucesso!', 'success');
-            
-            // Redirecionar após 2 segundos
+
+            // Redirecionar para página de pedidos após 2 segundos
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'pedidosCliente.html';
             }, 2000);
+
+        } catch (error) {
+            console.error('Erro ao criar pedido:', error);
+            showNotification(`Erro ao criar pedido: ${error.message}`, 'error');
         }
     }
 
@@ -534,11 +633,11 @@ if (isCheckoutPage()) {
         if (confirm('Tem certeza que deseja limpar todo o carrinho?')) {
             cart = [];
             localStorage.setItem('cart', JSON.stringify(cart));
-            
+
             renderCartItems();
             updateOrderSummary();
             updateCartBadge();
-            
+
             showNotification('Carrinho limpo com sucesso!', 'success');
         }
     }
@@ -561,7 +660,7 @@ if (isCheckoutPage()) {
             const productId = parseInt(cartItem.dataset.productId);
             const currentValue = parseInt(input.value);
             const newValue = button.querySelector('.fa-minus') ? currentValue - 1 : currentValue + 1;
-            
+
             if (newValue >= 1) {
                 input.value = newValue;
                 updateQuantity(productId, newValue);
