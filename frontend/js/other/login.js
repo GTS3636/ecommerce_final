@@ -34,6 +34,7 @@ loginForm.addEventListener("submit", (e)=>{
         localStorage.setItem("token", data.token)
         localStorage.setItem("nome", data.nome)
         localStorage.setItem("tipo", data.tipo)
+        localStorage.setItem("idUsuario", data.idUsuario)
 
         res.style.color = "green"
         res.innerHTML = `<h3>Login efetuado com sucesso!</h3>`

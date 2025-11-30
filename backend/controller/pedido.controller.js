@@ -38,12 +38,12 @@ const buscarEnderecoPorCEP = async (cep) => {
 }
 
 const cadastrar = async (req, res) => {
-    const { idUsuario, cep, numero, complemento, itens, status = "PENDENTE_PAGAMENTO" } = req.body
+    const { idUsuario, cep, complemento, itens, status = "PENDENTE_PAGAMENTO" } = req.body
     
     // Validação dos campos obrigatórios
-    if (!idUsuario || !cep || !numero || !itens || !Array.isArray(itens) || itens.length === 0) {
+    if (!idUsuario || !cep || !itens || !Array.isArray(itens) || itens.length === 0) {
         return res.status(400).json({
-            error: "Campos obrigatórios: idUsuario, cep, numero, itens (array de produtos)"
+            error: "Campos obrigatórios: idUsuario, cep, itens (array de produtos)"
         })
     }
 
@@ -89,7 +89,7 @@ const cadastrar = async (req, res) => {
     // Montar objeto de entrega completo
     const entrega = {
         ...dadosEndereco,
-        numero: numero || "Sem número",
+        numero: "Sem número",
         complemento: complemento || dadosEndereco.complemento
     }
 

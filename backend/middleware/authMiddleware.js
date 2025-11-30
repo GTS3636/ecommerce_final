@@ -21,6 +21,8 @@ if (!token) {
 try {
     const payload = verificarToken(token)
 
+    if(payload === null) return new Error("Tokken inválido!")
+
     req.user = payload  
 
     console.log('[AUTH MIDDLEWARE] - Token válido. Payload:')

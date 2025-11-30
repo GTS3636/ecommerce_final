@@ -97,8 +97,9 @@ function escapeHtml(text) {
 }
 
 function formatPrice(price) {
-    if (typeof price === "string") return
-    return parseFloat(price).toFixed(2).replace('.', ',');
+    if (typeof price === "string") price = parseFloat(price);
+    if (isNaN(price)) return "0,00";
+    return price.toFixed(2).replace('.', ',');
 }
 
 function truncateText(text, maxLength) {
@@ -171,7 +172,8 @@ if (isIndexPage()) {
             return;
         }
 
-        productsGrid.innerHTML = products.map(product => `
+        productsGrid.innerHTML = products.map(product =>
+            `
             <div class="product-card" 
                  data-product-id="${product.codProduto}"
                  data-product-name="${escapeHtml(product.nome)}"
@@ -313,6 +315,15 @@ if (isIndexPage()) {
         productsGrid = document.querySelector('.products-grid');
         fetchProducts();
         updateCartBadge();
+
+        // Adicionar listener ao botão do carrinho
+        const cartBtn = document.querySelector('.cart-btn');
+        if (cartBtn) {
+            cartBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'checkout.html';
+            });
+        }
     });
 
     // Event Listeners para busca
@@ -368,15 +379,15 @@ if (isCheckoutPage()) {
 
     let calcularFrete = document.getElementById("calcularFrete")
 
-    calcularFrete.addEventListener("click", async (e)=>{
+    calcularFrete.addEventListener("click", async (e) => {
         e.preventDefault(e)
         let cep = document.getElementById("cep").value
 
-        if(!cep || cep == ""){
+        if (!cep || cep == "") {
             return alert("É necessário informar um CEP!")
         }
 
-        const responseCep = await fetch(`https://viacep.com.br/ws/${cep}/json/`,{headers: {'Authorization': `Bearer ${token}`}})
+        const responseCep = await fetch(`https://viacep.com.br/ws/${cep}/json/`, { headers: { 'Authorization': `Bearer ${token}` } })
         const dataCep = await responseCep.json()
 
         if (dataCep.erro) {
@@ -519,8 +530,8 @@ if (isCheckoutPage()) {
         // Verifica se há itens no carrinho
         if (cart.length > 0) {
             const shipping = SHIPPING_COST;
-            
-            if(typeof shipping !== "number"){
+
+            if (typeof shipping !== "number") {
                 const total = subtotal
                 totalElement.textContent = `R$ ${formatPrice(total)}`;
                 shippingElement.textContent = "Digite o seu CEP";
@@ -544,7 +555,7 @@ if (isCheckoutPage()) {
     function finalizarCompra() {
         let cep = document.getElementById("cep").value
 
-        if(!cep || cep == ""){
+        if (!cep || cep == "") {
             return alert("É necessário informar um CEP para a entrega do pedido!")
         }
 
@@ -567,7 +578,7 @@ if (isCheckoutPage()) {
 
         if (confirm(`Confirmar pedido?\n\nTotal: R$ ${formatPrice(total)}\n\nVocê será redirecionado para a página de pedidos.`)) {
             // Chamar API para criar pedido
-            criarPedido(subtotal, total);
+            criarPedido(subtotal, total, cep)
         }
     }
 
@@ -575,19 +586,24 @@ if (isCheckoutPage()) {
     async function criarPedido(subtotal, total, cep) {
         try {
             // Preparar dados do pedido
+            console.log(cart);
+            
             const itens = cart.map(item => ({
-                idProduto: item.id,
+                codProduto: item.id,
                 quantidade: item.quantity,
                 precoUnitario: item.price,
                 valorTotalItem: item.price * item.quantity
             }));
+
+            const idUsuario = localStorage.getItem("idUsuario")
 
             const pedidoData = {
                 itens: itens,
                 valorSubtotal: subtotal,
                 valorFrete: SHIPPING_COST,
                 valorTotal: total,
-                uf: 'SP'
+                idUsuario: idUsuario,
+                cep: cep
             };
 
             const response = await fetch('http://localhost:3000/pedido/cadastrar', {

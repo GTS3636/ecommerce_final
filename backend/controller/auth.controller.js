@@ -39,6 +39,7 @@ const login = async (req,res)=>{
             message: "Login realizado com sucesso!", 
             token,
             nome: usuario.nome,
+            idUsuario: usuario.codUsuario,
             tipo: usuario.tipo_usuario
         })
 
