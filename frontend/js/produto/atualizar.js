@@ -13,8 +13,14 @@ formAtualizar.addEventListener("submit", (e)=>{
     let descricao = document.getElementById("descricao").value
     let especificacoes = document.getElementById("especificacoes").value
     let quantidade_minima = document.getElementById("quantidade_minima").value
+    
+    if(!codProduto){
+        return alert("Por favor, insira o código do produto para sabermos quem irá sofrer as alterações!")
+    }
 
-    console.log(especificacoes);
+    if(!nome && !preco && !imagem_url && !ativo && !categoria && !descricao && !especificacoes && !quantidade_minima){
+        return alert("Por favor, ao menos um campo deve ser alterado para ocorrer a atualização!")
+    }
 
 
     if (especificacoes == '{"key":"value"}'){

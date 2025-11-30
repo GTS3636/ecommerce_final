@@ -17,6 +17,14 @@ formAtualizar.addEventListener("submit", (e)=>{
     let codigoRastreio = document.getElementById("codigoRastreio").value
     let statusEntrega = document.getElementById("statusEntrega").value
 
+    if(!codEntrega || !idPedido){
+        return alert("Por favor, insira o código da entrega e/ou do pedido para sabermos quem irá sofrer as alterações!")
+    }
+
+    if(!cep && !logradouro && !complemento && !bairro && !localidade && !uf && !numero && !dataEstimada && !codigoRastreio && !statusEntrega){
+        return alert("Por favor, ao menos um campo deve ser alterado para ocorrer a atualização!")
+    }
+
     let valores = {
         codEntrega: codEntrega,
         idPedido: idPedido,

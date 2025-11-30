@@ -1,39 +1,145 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Atualizar Usuário</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Usuário - Lojas Tijucanas</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../../js/other/auth.js" defer></script>
+    <script src="../../js/usuario/atualizar.js" defer></script>
 </head>
-<body>
-    <nav>
-        <a href="../../index.html">Home</a>
-        <a href="usuarioIndex.html">Voltar</a>
-        <span id="nomeP"></span>
-        <a id="logout" href="#">Logout</a>
-    </nav>
-    <h1>Atualizar Usuário</h1>
-    <form id="atualizarForm">
-        <label for="codUsuario">Código do Usuário:</label>
-        <input type="number" id="codUsuario" name="codUsuario" required><br>
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required><br>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
-        <label for="senha">Senha:</label>
-        <input type="password" id="senha" name="senha" required><br>
-        <label for="telefone">Telefone:</label>
-        <input type="text" id="telefone" name="telefone" required><br>
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf" required><br>
-        <label for="identidade">Identidade:</label>
-        <input type="text" id="identidade" name="identidade"><br>
-        <label for="tipo_usuario">Tipo de Usuário:</label>
-        <select id="tipo_usuario" name="tipo_usuario" required>
-            <option value="CLIENTE">Cliente</option>
-            <option value="ADMIN">Admin</option>
-        </select><br>
-        <button type="submit" class="btnFunction">Atualizar</button>
-    </form>
-    <script src="../../auth.js"></script>
+<body class="admin-page">
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-btn" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="./usuarioIndex.html" class="sidebar-link">
+                <i class="fas fa-users"></i> Usuários
+            </a>
+            <a href="../produto/produtoIndex.html" class="sidebar-link">
+                <i class="fas fa-box"></i> Produtos
+            </a>
+            <a href="../entrega/entregaIndex.html" class="sidebar-link">
+                <i class="fas fa-truck"></i> Entregas
+            </a>
+            <a href="../estoque/estoqueIndex.html" class="sidebar-link">
+                <i class="fas fa-warehouse"></i> Estoque
+            </a>
+            <a href="../pedido/pedidoIndex.html" class="sidebar-link">
+                <i class="fas fa-shopping-bag"></i> Pedidos
+            </a>
+            <a href="../../index.html" class="sidebar-link">
+                <i class="fa fa-home"></i> Home
+            </a>
+        </nav>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left" id="header-left">
+            <div id="header-left-menu">
+
+            </div>
+            <div class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-text" id="user-text">
+                    <p>Faça Login ou</p>
+                    <p>Cadastre-se para</p>
+                    <p>acessar sua conta</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <h1 class="logo">Lojas Tijucanas</h1>
+        </div>
+
+        <div class="header-right" id="header-right">
+            <button class="header-btn" id="loginUser">
+                <i class="fas fa-arrow-right-to-bracket"></i> <a href="../../login.html">Login</a>
+            </button>
+            <button class="header-btn" id="registerUser">
+                <i class="fas fa-user-plus"></i> <a href="../../register.html">Sign Up</a>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <a href="./usuarioIndex.html" style="text-decoration: none; color: #333; border: 1px solid #333; padding: 5px;">Voltar</a>
+        <h1 style="margin-top: 0; text-align: center; color: #333;">Atualizar Usuário</h1><hr>
+        <form id="atualizarForm">
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="codUsuario">Código do Usuário:</label>
+                    <input type="number" id="codUsuario" name="codUsuario" required>
+                </div>
+            </div><hr>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome">
+                </div>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+                </div>
+            </div><hr>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="senha">Senha:</label>
+                    <input type="password" id="senha" name="senha">
+                </div>
+                <div class="input-group">
+                    <label for="telefone">Telefone:</label>
+                    <input type="text" id="telefone" name="telefone">
+                </div>
+            </div><hr>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="cpf">CPF:</label>
+                    <input type="text" id="cpf" name="cpf">
+                </div>
+                <div class="input-group">
+                    <label for="identidade">Identidade:</label>
+                    <input type="text" id="identidade" name="identidade">
+                </div>
+                <div class="input-group">
+                    <label for="tipo_usuario">Tipo de Usuário:</label>
+                    <select id="tipo_usuario" name="tipo_usuario">
+                        <option value="CLIENTE">Cliente</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+                </div>
+            </div><hr>
+            <button type="submit" class="btnFunction">Atualizar</button>
+            <div id="res"></div>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p class="footer-text">Desenvolvido por Guilherme Tomaz Silva</p>
+
+        <button class="cart-btn">
+            <i class="fas fa-shopping-cart"></i>
+        </button>
+    </footer>
 </body>
 </html>

@@ -38,7 +38,7 @@ const buscarEnderecoPorCEP = async (cep) => {
 }
 
 const cadastrar = async (req, res) => {
-    const { idUsuario, cep, numero, complemento, itens } = req.body
+    const { idUsuario, cep, numero, complemento, itens, status = "PENDENTE_PAGAMENTO" } = req.body
     
     // Validação dos campos obrigatórios
     if (!idUsuario || !cep || !numero || !itens || !Array.isArray(itens) || itens.length === 0) {
@@ -138,7 +138,8 @@ const cadastrar = async (req, res) => {
             idUsuario,
             valorSubtotal: subtotal,
             valorFrete: valorFrete,
-            valorTotal: valorTotal
+            valorTotal: valorTotal,
+            status: status
         }, { transaction })
 
         // Criar entrega

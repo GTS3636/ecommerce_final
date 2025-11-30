@@ -1,5 +1,5 @@
 const Entrega = require('../models/Entrega')
-const { calcularFrete } = require("../utils/frete")
+const { calcularFrete, calcularDataEstimada, formatarDataEstimada } = require("../utils/frete")
 
 const cadastrar = async (req, res) => {
     const valores = req.body
@@ -29,8 +29,23 @@ const cadastrar = async (req, res) => {
             return res.status(400).json({ error: "O CEP informado é inválido." })
         }
 
+        const dadosData = {
+            idPedido: valores.idPedido,
+            cep: VideoColorSpace.cep,
+            logradouro: valores.logradouro,
+            bairro: valores.bairro,
+            localidade: valores.localidade,
+            uf: valores.uf,
+            numero: valores.numero,
+            statusEntrega: valores.statusEntrega,
+            complemento: valores.complemento ? valores.complemento : null,
+            dataEstimada: calcularDataEstimada(valores.uf)
+        }
+
+        const dataFormatada = formatarDataEstimada(dadosData.dataEstimada)
+
         // Criar registro de entrega
-        const dados = await Entrega.create(valores)
+        const dados = await Entrega.create(dadosData, dataFormatada)
 
         return res.status(201).json(dados)
 
@@ -53,9 +68,7 @@ const atualizar = async (req, res) => {
 
     // Campos obrigatórios
     const camposObrigatorios = [
-        'codEntrega', 'idPedido', 'cep', 'logradouro',
-        'bairro', 'localidade', 'uf', 'numero',
-        'statusEntrega'
+        'codEntrega', 'idPedido'
     ];
 
     // Validação dos campos obrigatórios
@@ -63,7 +76,7 @@ const atualizar = async (req, res) => {
 
     if (camposFaltando.length > 0) {
         return res.status(400).json({
-            error: "Todos os campos são obrigatórios!",
+            error: "Todos os campos de ID são obrigatórios!",
             camposFaltando
         })
     }
@@ -115,5 +128,27 @@ const calcularFreteCheckout = async (req, res) => {
         return res.status(500).json({ error: 'Erro ao calcular o frete da entrega. Tente novamente mais tarde.' })
     }
 }
+const calcularDataEntrega = async (req, res) => {
+    const { uf } = req.body
 
-module.exports = { cadastrar, listar, atualizar, consultar, calcularFreteCheckout }
+    if (!uf) {
+        return res.status(400).json({ error: "É preciso informar a UF para calcular a data de entrega!" })
+    }
+
+    try {
+        const dataEstimada = calcularDataEstimada(uf)
+        const dataFormatada = formatarDataEstimada(dataEstimada)
+
+        return {
+            dataEstimada: dataEstimada,
+            dataFormatada: dataFormatada,
+            mensagem: `Sua encomenda chegará aproximadamente em ${dataFormatada}`
+        }
+    }
+    catch (err) {
+        console.error('Erro ao calcular a data de entrega:', err)
+        return res.status(500).json({ error: 'Erro ao calcular a data de entrega. Tente novamente mais tarde.' })
+    }
+}
+
+module.exports = { cadastrar, listar, atualizar, consultar, calcularFreteCheckout, calcularDataEntrega }

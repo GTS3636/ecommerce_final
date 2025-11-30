@@ -8,6 +8,14 @@ formAtualizar.addEventListener("submit", (e)=>{
     let quantidade_atual = Number(document.getElementById("quantidade_atual").value)
     let quantidade_minima = Number(document.getElementById("quantidade_minima").value)
 
+    if(!idProduto){
+        return alert("Por favor, insira o código do produto para sabermos quem irá sofrer as alterações!")
+    }
+
+    if(!quantidade_atual && !quantidade_minima){
+        return alert("Por favor, ao menos um campo deve ser alterado para ocorrer a atualização!")
+    }
+
     let valores = {}
 
     if(quantidade_minima == 0){

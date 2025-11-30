@@ -49,9 +49,10 @@ const Entrega = db.define('entrega',{
         allowNull: true
     },
     codigoRastreio: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.UUIDV4,
         allowNull: true,
-        unique: true
+        unique: true,
+        autoIncrement: true
     },
     statusEntrega: {
         type: DataTypes.ENUM('EM_TRANSITO', 'SAIU_PARA_ENTREGA', 'ENTREGUE', 'EXTRAVIADO'),

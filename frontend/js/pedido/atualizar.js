@@ -11,6 +11,14 @@ formAtualizar.addEventListener("submit", (e)=>{
     let valorFrete = document.getElementById("valorFrete").value
     let valorTotal = document.getElementById("valorTotal").value
 
+    if(!codPedido || !idUsuario){
+        return alert("Por favor, insira o código do usuário e/ou pedido para sabermos quem irá sofrer as alterações!")
+    }
+
+    if(!status && !valorSubtotal && !valorFrete && !valorTotal){
+        return alert("Por favor, ao menos um campo deve ser alterado para ocorrer a atualização!")
+    }
+
     let valores = {
         codPedido: codPedido,
         idUsuario: idUsuario,
