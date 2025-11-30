@@ -81,7 +81,7 @@ function calcularDataEstimada(uf) {
     }
 
     // Calcular a data estimada de entrega (apenas dias úteis)
-    const dataAtual = new Date();
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
     let dataEstimada = new Date(dataAtual);
     let contadorDiasUteis = 0;
 
