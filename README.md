@@ -68,6 +68,11 @@ Sistema de e-commerce desenvolvido com Node.js no backend e HTML/CSS/JavaScript 
 
 - **`/docs`** - Documentação
   - `fluxo_pedido.txt` - Documentação do fluxo de pedidos
+  - `fluxo_checkout.txt` - Documentação do fluxo de checkout
+  - `casoUsoEcom.png` - Diagrama de caso de uso
+  - `classeDiagramaEcom.png` - Diagrama de classes
+  - `modeloDER.png` - Modelo Entidade-Relacionamento
+  - `modelo_logico_.png` - Modelo lógico
 
 #### Arquivos Raiz
 
@@ -107,7 +112,7 @@ Sistema de e-commerce desenvolvido com Node.js no backend e HTML/CSS/JavaScript 
   - `listar.js`, `cadastrar.js`, `atualizar.js`, `consultar.js`, `deletar.js`
 
 - **`/pedido`** - Scripts de pedido
-  - `listar.js`, `cadastrar.js`, `atualizar.js`, `consultar.js`
+  - `listar.js`, `cadastrar.js`, `atualizar.js`, `consultar.js`, `deletar.js`
 
 - **`/entrega`** - Scripts de entrega
   - `listar.js`, `cadastrar.js`, `atualizar.js`, `consultar.js`
@@ -115,9 +120,15 @@ Sistema de e-commerce desenvolvido com Node.js no backend e HTML/CSS/JavaScript 
 - **`/estoque`** - Scripts de estoque
   - `listar.js`, `cadastrar.js`, `atualizar.js`, `consultar.js`
 
+- **`/usuario`** - Scripts de usuário
+  - `listar.js`, `cadastrar.js`, `atualizar.js`, `consultar.js`, `deletar.js`
+
+- **`/item_pedido`** - Scripts de item de pedido
+  - `listar.js`, `cadastrar.js`, `atualizar.js`, `consultar.js`, `deletar.js`
+
 #### Páginas HTML (`/html`)
 
-- **`/produto`**, **`/pedido`**, **`/entrega`**, **`/estoque`**, **`/usuario`** - Páginas de CRUD para cada entidade
+- **`/produto`**, **`/pedido`**, **`/entrega`**, **`/estoque`**, **`/usuario`**, **`/item_pedido`** - Páginas de CRUD para cada entidade
 
 ## Dependências Principais
 
@@ -138,9 +149,45 @@ Sistema de e-commerce desenvolvido com Node.js no backend e HTML/CSS/JavaScript 
 
 ---
 
-## Lista do que falta fazer
+## Funcionalidades
 
-1. **Terminar página de pedidos do cliente**
-2. **Testar as funções básicas do pedido, entrega, estoque e produto no frontend**
-3. **Implementar os arquivos JS para usuário e modificar os arquivos `.html` correspondentes**
-4. *(Opcional)* **Fazer/implementar um mecanismo de pesquisa inteligente de produtos**
+### Autenticação e Autorização
+- **Login e Registro**: Autenticação de usuários com JWT
+- **Controle de Acesso**: Middleware para verificar permissões de admin
+
+### Gerenciamento de Produtos
+- **CRUD Completo**: Cadastro, leitura, atualização e exclusão de produtos
+- **Busca e Filtros**: Busca de produtos por nome, categoria e outros critérios
+
+### Gerenciamento de Pedidos
+- **Fluxo de Pedido**: Criação, atualização e exclusão de pedidos
+- **Itens de Pedido**: Gerenciamento de itens associados a pedidos
+
+### Gerenciamento de Entregas
+- **Acompanhamento**: Status e detalhes de entregas
+- **Atualização**: Atualização de informações de entrega
+
+### Gerenciamento de Estoque
+- **Controle**: Controle de estoque de produtos
+- **Atualização**: Atualização de quantidades e informações de estoque
+
+### Gerenciamento de Usuários
+- **Perfis**: Cadastro e gerenciamento de perfis de usuário
+- **Permissões**: Controle de acesso baseado em funções
+
+## Documentação Adicional
+
+- **Diagramas**: Disponíveis em `/backend/docs` para visualização da arquitetura
+- **Fluxos**: Documentação de fluxos de pedido e checkout
+
+## Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT. Consulte o arquivo LICENSE para mais detalhes.
