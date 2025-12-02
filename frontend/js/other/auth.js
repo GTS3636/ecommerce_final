@@ -10,14 +10,8 @@ const isOnRegisterPage = location.pathname.endsWith("/register.html")
 const isOnIndexPage = location.pathname.endsWith("/index.html")
 if(isOnIndexPage) loginPath = "./frontend/login.html"
 const isOnCarrinhoPage = location.pathname.endsWith("/carrinho.html")
-const isOnSearchPage = location.pathname.endsWith("/search.html")
 
 const isOnAuthPage = isOnLoginPage || isOnRegisterPage
-const isOnPublicPage  = isOnCarrinhoPage || isOnIndexPage || isOnSearchPage || isOnAuthPage
-
-if(!token && !isOnPublicPage ){
-    location.href = loginPath
-}
 
 if(token && isOnAuthPage){
     location.href = indexPath
