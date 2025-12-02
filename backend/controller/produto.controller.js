@@ -62,7 +62,7 @@ const atualizar = async (req, res) => {
     
      // Campos obrigatórios
     const camposObrigatorios = [
-        'codPedido'
+        'codProduto'
     ]
     
     // Validação dos campos obrigatórios com a função filter
