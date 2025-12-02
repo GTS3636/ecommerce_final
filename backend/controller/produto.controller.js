@@ -109,18 +109,18 @@ const consultar = async (req, res) => {
     }
 }
 const deletar = async (req,res) => {
-    const valores = req.body
+    const codProduto = req.params.id
     if(
-        !valores.codProduto
+        !codProduto
     ){
         return res.status(403).json({error: "É preciso informar o código do produto!"})
     }
     try{
-        const produtoExist = await Produto.findByPk(valores.codProduto)
+        const produtoExist = await Produto.findByPk(codProduto)
         if(!produtoExist){
             return res.status(404).json({error: "Não foi possível encontrar nenhum produto com o código inserido!"})
         }
-        await Produto.destroy({where:{codProduto: valores.codProduto}})
+        await Produto.destroy({where:{codProduto: codProduto}})
         res.status(200).json({message: "Sucesso ao deletar o produto!"})
     }catch(err){
         console.error('Erro ao fazer a deleção do produto: ',err)

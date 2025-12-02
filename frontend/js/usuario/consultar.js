@@ -4,14 +4,14 @@ let formConsultar = document.getElementById("consultarForm")
 formConsultar.addEventListener("submit", (e) => {
     e.preventDefault()
 
-    let codUsuario = document.getElementById("codUsuario").value
+    let nome = document.getElementById("nome").value
 
-    if (!codUsuario) {
-        usuarioDetails.innerHTML = `<p style="color: red;">Por favor, insira o código do usuário.</p>`
+    if (!nome) {
+        usuarioDetails.innerHTML = `<p style="color: red;">Por favor, insira o nome do usuário.</p>`
         return
     }
 
-    fetch(`http://localhost:3000/usuario/consultar/${codUsuario}`, {
+    fetch(`http://localhost:3000/usuario/consultar/${nome}`, {
         method: "GET",
         headers: {
             'Authorization': `Bearer ${token}`,

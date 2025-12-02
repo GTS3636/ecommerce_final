@@ -314,38 +314,6 @@ function fecharModal() {
     document.body.style.overflow = 'auto';
 }
 
-// Rastrear pedido
-function rastrearPedido(pedidoId) {
-    alert(`Funcionalidade de rastreamento do pedido #${pedidoId} será implementada em breve.`);
-}
-
-// Cancelar pedido
-async function cancelarPedido(pedidoId) {
-    if (!confirm('Tem certeza que deseja cancelar este pedido?')) {
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/pedidos/${pedidoId}/cancelar`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (response.ok) {
-            alert('Pedido cancelado com sucesso!');
-            await carregarPedidos(); // Recarrega a lista
-            fecharModal();
-        } else {
-            throw new Error('Erro ao cancelar pedido');
-        }
-    } catch (error) {
-        console.error('Erro ao cancelar pedido:', error);
-        alert('Não foi possível cancelar o pedido. Tente novamente.');
-    }
-}
-
 // Mostra mensagem quando não há pedidos
 function mostrarMensagemSemPedidos() {
     const ordersContent = document.getElementById('ordersContent');

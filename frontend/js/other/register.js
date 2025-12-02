@@ -109,7 +109,7 @@ registrarForm.addEventListener("submit", async (e) => {
         registrarForm.reset()
         
         setTimeout(() => {
-            location.href = "./index.html"
+            location.href = "../index.html"
         }, 2000)
 
     } catch (erro) {
