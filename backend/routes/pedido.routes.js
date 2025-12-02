@@ -17,4 +17,7 @@ router.get("/listar", authMiddleware, pedidoController.listar)
 // Pronto
 router.get("/consultar/:id", authMiddleware, pedidoController.consultar)
 
+// Pronto
+router.delete("/deletar/:id", authMiddleware, adminMiddleware, pedidoController.deletar)
+
 module.exports = router

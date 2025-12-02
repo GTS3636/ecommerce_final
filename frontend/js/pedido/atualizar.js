@@ -27,6 +27,14 @@ formAtualizar.addEventListener("submit", (e)=>{
         valorFrete: valorFrete,
         valorTotal: valorTotal
     }
+    
+    // Filtra campos não preenchidos
+    Object.keys(valores).forEach((key) => {
+        if (valores[key] === "") {
+            delete valores[key];
+        }
+    })
+
 
     fetch("http://localhost:3000/pedido/atualizar", {
         method: "PUT",

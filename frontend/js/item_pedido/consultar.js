@@ -11,7 +11,7 @@ formConsultar.addEventListener("submit", (e) => {
         return
     }
 
-    fetch(`http://localhost:3000/item_pedido/consultar/${codItemPedido}`, {
+    fetch(`http://localhost:3000/itemPedido/consultar/${codItemPedido}`, {
         method: "GET",
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -33,10 +33,11 @@ formConsultar.addEventListener("submit", (e) => {
             itemPedidoDetails.innerHTML = `
             <h3>Detalhes do Item de Pedido</h3>
             <p><strong>Código do Item:</strong> ${data.codItemPedido}</p>
-            <p><strong>Código do Pedido:</strong> ${data.codPedido}</p>
-            <p><strong>Código do Produto:</strong> ${data.codProduto}</p>
+            <p><strong>Código do Pedido:</strong> ${data.idPedido}</p>
+            <p><strong>Código do Produto:</strong> ${data.idProduto}</p>
             <p><strong>Quantidade:</strong> ${data.quantidade}</p>
-            <p><strong>Preço Unitário:</strong> R$ ${data.preco_unitario}</p>
+            <p><strong>Preço Unitário:</strong> R$ ${data.precoUnitario}</p>
+            <p><strong>Valor total:</strong> R$ ${data.valorTotalItem}</p>
         `
         })
         .catch((err) => {

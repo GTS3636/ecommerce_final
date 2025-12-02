@@ -11,4 +11,13 @@ router.put("/atualizar", authMiddleware, adminMiddleware, itmePedidoController.a
 // 
 router.get("/listar", authMiddleware, adminMiddleware, itmePedidoController.listar)
 
+// Rota para cadastrar novo item de pedido
+router.post("/cadastrar", authMiddleware, adminMiddleware, itmePedidoController.cadastrar)
+
+// Rota para consultar item de pedido
+router.get("/consultar/:id", authMiddleware, adminMiddleware, itmePedidoController.consultar)
+
+// Rota para deletar item de pedido
+router.delete("/deletar/:id", authMiddleware, adminMiddleware, itmePedidoController.deletar)
+
 module.exports = router

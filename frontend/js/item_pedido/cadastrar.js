@@ -10,13 +10,13 @@ formCadastrar.addEventListener("submit", (e) => {
     let preco_unitario = document.getElementById("preco_unitario").value
 
     let valores = {
-        codPedido: codPedido,
-        codProduto: codProduto,
+        idPedido: codPedido,
+        idProduto: codProduto,
         quantidade: quantidade,
-        preco_unitario: preco_unitario
+        precoUnitario: preco_unitario
     }
 
-    fetch("http://localhost:3000/item_pedido/cadastrar", {
+    fetch("http://localhost:3000/itemPedido/cadastrar", {
         method: "POST",
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -40,10 +40,12 @@ formCadastrar.addEventListener("submit", (e) => {
             res.style.color = "green"
             res.innerHTML = `
             <h3>Item de Pedido cadastrado com sucesso!</h3>
-            <p><strong>Código do Pedido:</strong> ${data.codPedido}</p>
-            <p><strong>Código do Produto:</strong> ${data.codProduto}</p>
+            <p><strong>Código do Item:</strong> ${data.codItemPedido}</p>
+            <p><strong>Código do Pedido:</strong> ${data.idPedido}</p>
+            <p><strong>Código do Produto:</strong> ${data.idProduto}</p>
             <p><strong>Quantidade:</strong> ${data.quantidade}</p>
-            <p><strong>Preço Unitário:</strong> R$ ${data.preco_unitario}</p>
+            <p><strong>Preço Unitário:</strong> R$ ${data.precoUnitario}</p>
+            <p><strong>Valor total:</strong> R$ ${data.valorTotalItem}</p>
         `
         })
         .catch((err) => {

@@ -23,10 +23,18 @@ formAtualizar.addEventListener("submit", (e) => {
         codPedido: codPedido,
         codProduto: codProduto,
         quantidade: quantidade,
-        preco_unitario: preco_unitario
+        precoUnitario: preco_unitario
     }
+    
+    // Filtra campos não preenchidos
+    Object.keys(valores).forEach((key) => {
+        if (valores[key] === "") {
+            delete valores[key];
+        }
+    })
 
-    fetch("http://localhost:3000/item_pedido/atualizar", {
+
+    fetch("http://localhost:3000/itemPedido/atualizar", {
         method: "PUT",
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -51,10 +59,11 @@ formAtualizar.addEventListener("submit", (e) => {
             res.innerHTML = `
             <h3>Item de Pedido atualizado com sucesso!</h3>
             <p><strong>Código do Item:</strong> ${data.codItemPedido}</p>
-            <p><strong>Código do Pedido:</strong> ${data.codPedido}</p>
-            <p><strong>Código do Produto:</strong> ${data.codProduto}</p>
+            <p><strong>Código do Pedido:</strong> ${data.idPedido}</p>
+            <p><strong>Código do Produto:</strong> ${data.idProduto}</p>
             <p><strong>Quantidade:</strong> ${data.quantidade}</p>
-            <p><strong>Preço Unitário:</strong> R$ ${data.preco_unitario}</p>
+            <p><strong>Preço Unitário:</strong> R$ ${data.precoUnitario}</p>
+            <p><strong>Valor total:</strong> R$ ${data.valorTotalItem}</p>
         `
         })
         .catch((err) => {

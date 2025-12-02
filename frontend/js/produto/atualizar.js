@@ -38,6 +38,14 @@ formAtualizar.addEventListener("submit", (e)=>{
         especificacoes: especificacoes,
         quantidade_minima: quantidade_minima
     }
+    
+    // Filtra campos não preenchidos
+    Object.keys(valores).forEach((key) => {
+        if (valores[key] === "") {
+            delete valores[key];
+        }
+    })
+
 
     fetch("http://localhost:3000/produto/atualizar", {
         method: "PUT",

@@ -1,7 +1,7 @@
 let res = document.getElementById("res")
 let formAtualizar = document.getElementById("atualizarForm")
 
-formAtualizar.addEventListener("submit", (e)=>{
+formAtualizar.addEventListener("submit", (e) => {
     e.preventDefault()
 
     let codEntrega = document.getElementById("codEntrega").value
@@ -17,11 +17,11 @@ formAtualizar.addEventListener("submit", (e)=>{
     let codigoRastreio = document.getElementById("codigoRastreio").value
     let statusEntrega = document.getElementById("statusEntrega").value
 
-    if(!codEntrega || !idPedido){
+    if (!codEntrega || !idPedido) {
         return alert("Por favor, insira o código da entrega e/ou do pedido para sabermos quem irá sofrer as alterações!")
     }
 
-    if(!cep && !logradouro && !complemento && !bairro && !localidade && !uf && !numero && !dataEstimada && !codigoRastreio && !statusEntrega){
+    if (!cep && !logradouro && !complemento && !bairro && !localidade && !uf && !numero && !dataEstimada && !codigoRastreio && !statusEntrega) {
         return alert("Por favor, ao menos um campo deve ser alterado para ocorrer a atualização!")
     }
 
@@ -40,28 +40,37 @@ formAtualizar.addEventListener("submit", (e)=>{
         statusEntrega: statusEntrega
     }
 
+    // Filtra campos não preenchidos
+    Object.keys(valores).forEach((key) => {
+        if (valores[key] === "") {
+            delete valores[key];
+        }
+    })
+
     fetch("http://localhost:3000/entrega/atualizar", {
         method: "PUT",
         headers: {
             'Authorization': `Bearer ${token}`,
-            "Content-Type":"application/json"
+            "Content-Type": "application/json"
         },
         body: JSON.stringify(valores)
     })
-    .then(resp=>{
-        if(!resp.ok){
-            throw new Error("Erro na requisição.")
-        }
-        return resp.json()
-    })
-    .then((data)=>{
-        if(data.erro){
-            res.style.color = "red"
-            return res.innerHTML = `${data.erro}`
-        }
+        .then(resp => {
+            if (!resp.ok) {
+                throw new Error("Erro na requisição.")
+            }
+            return resp.json()
+        })
+        .then((data) => {
+            console.log(data);
+            
+            if (data.error) {
+                res.style.color = "red"
+                return res.innerHTML = `${data.error}`
+            }
 
-        res.style.color = "green"
-        res.innerHTML = `
+            res.style.color = "green"
+            res.innerHTML = `
             <h3>Entrega atualizada com sucesso!</h3>
             <p><strong>Código da Entrega:</strong> ${data.codEntrega}</p>
             <p><strong>ID do Pedido:</strong> ${data.idPedido}</p>
@@ -69,9 +78,9 @@ formAtualizar.addEventListener("submit", (e)=>{
             <p><strong>Logradouro:</strong> ${data.logradouro}</p>
             <p><strong>Status:</strong> ${data.statusEntrega}</p>
         `
-    })
-    .catch((err)=>{
-        res.innerHTML = `Ocorreu um erro ao atualizar a entrega, tente novamente mais tarde.`
-        console.error("Ocorreu um erro ao atualizar a entrega: ", err)
-    })
+        })
+        .catch((err) => {
+            res.innerHTML = `Ocorreu um erro ao atualizar a entrega, tente novamente mais tarde.`
+            console.error("Ocorreu um erro ao atualizar a entrega: ", err)
+        })
 })

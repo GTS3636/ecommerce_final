@@ -1,10 +1,9 @@
 let res = document.getElementById("res")
-let formAtualizar = document.getElementById("atualizarForm")
+let formCadastrar = document.getElementById("cadastrarForm")
 
-formAtualizar.addEventListener("submit", (e) => {
+formCadastrar.addEventListener("submit", (e) => {
     e.preventDefault()
 
-    let codUsuario = document.getElementById("codUsuario").value
     let nome = document.getElementById("nome").value
     let email = document.getElementById("email").value
     let senha = document.getElementById("senha").value
@@ -13,16 +12,12 @@ formAtualizar.addEventListener("submit", (e) => {
     let identidade = document.getElementById("identidade").value
     let tipo_usuario = document.getElementById("tipo_usuario").value
 
-    if (!codUsuario) {
-        return alert("Por favor, insira o código do usuário para sabermos quem irá sofrer as alterações!")
-    }
-
-    if (!nome && !email && !senha && !telefone && !cpf && !identidade && !tipo_usuario) {
-        return alert("Por favor, ao menos um campo deve ser alterado para ocorrer a atualização!")
+    // Validate required fields
+    if (!nome || !email || !senha) {
+        return alert("Por favor, preencha os campos obrigatórios: Nome, Email e Senha!")
     }
 
     let valores = {
-        codUsuario: codUsuario,
         nome: nome,
         email: email,
         senha: senha,
@@ -32,15 +27,15 @@ formAtualizar.addEventListener("submit", (e) => {
         tipo_usuario: tipo_usuario
     }
 
-    // Filtra campos não preenchidos
+    // Filter empty fields
     Object.keys(valores).forEach((key) => {
         if (valores[key] === "") {
             delete valores[key];
         }
     })
 
-    fetch("http://localhost:3000/usuario/atualizar", {
-        method: "PUT",
+    fetch("http://localhost:3000/usuario/cadastrar", {
+        method: "POST",
         headers: {
             'Authorization': `Bearer ${token}`,
             "Content-Type": "application/json"
@@ -49,7 +44,7 @@ formAtualizar.addEventListener("submit", (e) => {
     })
         .then(resp => {
             if (!resp.ok) {
-                throw new Error("Ocorreu um erro ao pegar a requisição.")
+                throw new Error("Ocorreu um erro ao processar a requisição.")
             }
             return resp.json()
         })
@@ -62,18 +57,18 @@ formAtualizar.addEventListener("submit", (e) => {
 
             res.style.color = "green"
             res.innerHTML = `
-            <h3>Usuário atualizado com sucesso!</h3>
+            <h3>Usuário cadastrado com sucesso!</h3>
             <p><strong>Código:</strong> ${data.codUsuario}</p>
             <p><strong>Nome:</strong> ${data.nome}</p>
             <p><strong>Email:</strong> ${data.email}</p>
             <p><strong>Telefone:</strong> ${data.telefone || 'N/A'}</p>
-            <p><strong>CPF:</strong> ${data.cpf}</p>
+            <p><strong>CPF:</strong> ${data.cpf || 'N/A'}</p>
             <p><strong>Identidade:</strong> ${data.identidade || 'N/A'}</p>
             <p><strong>Tipo de Usuário:</strong> ${data.tipo_usuario}</p>
         `
         })
         .catch((err) => {
-            res.innerHTML = `Ocorreu um erro ao atualizar o usuário, tente novamente mais tarde.`
-            console.error("Ocorreu um erro ao atualizar o usuário: ", err)
+            res.innerHTML = `Ocorreu um erro ao cadastrar o usuário, tente novamente mais tarde.`
+            console.error("Ocorreu um erro ao cadastrar o usuário: ", err)
         })
 })

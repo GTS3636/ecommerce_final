@@ -10,12 +10,14 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     display: grid;
-    grid-template-rows: auto auto 1fr auto; /* Header, Search, Conteúdo flexível, Footer */
+    grid-template-rows: auto auto 1fr auto;
+    /* Header, Search, Conteúdo flexível, Footer */
 }
 
 /* Admin pages without search bar - 3-row layout */
 body.admin-page {
-    grid-template-rows: auto 1fr auto; /* Header, Main Content, Footer */
+    grid-template-rows: auto 1fr auto;
+    /* Header, Main Content, Footer */
 }
 
 a {
@@ -74,10 +76,11 @@ a {
     padding: 20px 0;
 }
 
-li a{
+li a {
     color: #1976d2;
     font-weight: bolder;
 }
+
 li {
     list-style: none;
 }
@@ -137,15 +140,18 @@ li {
 }
 
 .header-center {
-    justify-self: center; /* Garante que o centro fique sempre centralizado */
+    justify-self: center;
+    /* Garante que o centro fique sempre centralizado */
 }
 
 .header-left {
     display: flex;
     align-items: center;
     gap: 15px;
-    justify-self: start; /* Alinha à esquerda */
-    max-width: 200px; /* Limita a largura máxima da seção esquerda */
+    justify-self: start;
+    /* Alinha à esquerda */
+    max-width: 200px;
+    /* Limita a largura máxima da seção esquerda */
 }
 
 .menu-btn {
@@ -178,7 +184,8 @@ li {
 .user-text {
     font-size: 11px;
     line-height: 1.3;
-    max-width: 120px; /* Limita a largura máxima do texto do usuário */
+    max-width: 120px;
+    /* Limita a largura máxima do texto do usuário */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -194,7 +201,8 @@ li {
 .header-right {
     display: flex;
     gap: 10px;
-    justify-self: end; /* Alinha à direita */
+    justify-self: end;
+    /* Alinha à direita */
 }
 
 .header-btn {
@@ -266,7 +274,8 @@ li {
     gap: 20px;
     max-width: 1400px;
     margin: 0 auto;
-    grid-row: 3; /* Garante que fique na terceira linha (após header e search) */
+    grid-row: 3;
+    /* Garante que fique na terceira linha (após header e search) */
 }
 
 /* Admin pages - products grid in row 2 instead of row 3 */
@@ -277,14 +286,15 @@ body.admin-page .products-grid {
 /* Main Content */
 .main-content {
     background-color: #fff;
-    max-width: 600px;
+    max-width: 750px;
     margin: 40px auto;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     font-family: 'Segoe UI', sans-serif;
     height: fit-content;
-    grid-row: 3; /* Garante que fique na terceira linha (após header e search) */
+    grid-row: 3;
+    /* Garante que fique na terceira linha (após header e search) */
 }
 
 /* Admin pages - main content in row 2 instead of row 3 */
@@ -845,8 +855,15 @@ label {
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 .product-image {
@@ -910,7 +927,8 @@ label {
     gap: 8px;
 }
 
-.btn-add-cart, .btn-view-details {
+.btn-add-cart,
+.btn-view-details {
     padding: 10px;
     border: none;
     border-radius: 5px;
@@ -1071,11 +1089,13 @@ label {
     margin-bottom: 20px;
 }
 
-.modal-description, .modal-specifications {
+.modal-description,
+.modal-specifications {
     margin-bottom: 20px;
 }
 
-.modal-description h3, .modal-specifications h3 {
+.modal-description h3,
+.modal-specifications h3 {
     font-size: 18px;
     color: #333;
     margin-bottom: 10px;
@@ -1165,7 +1185,7 @@ label {
     .modal-body {
         grid-template-columns: 1fr;
     }
-    
+
     .modal-image {
         height: 250px;
     }
@@ -1242,5 +1262,157 @@ label {
     .footer-text {
         position: static;
         transform: none;
+    }
+}
+
+/* Table Styles */
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.products-table thead {
+    background: linear-gradient(135deg, #00bfff, #1e90ff);
+    color: white;
+}
+
+.products-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #00bfff;
+}
+
+.products-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #333;
+}
+
+.products-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.products-table tbody tr:hover {
+    background-color: #f0f8ff;
+}
+
+.products-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.products-table .status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.products-table .status.ativo {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.products-table .status.inativo {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* User type status styles */
+.products-table .status.admin {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.products-table .status.cliente {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* Stock status styles */
+.products-table .status.suficiente {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.products-table .status.baixo {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+/* Delivery status styles */
+.products-table .status.em-transito {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.products-table .status.saiu-para-entrega {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.products-table .status.entregue {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.products-table .status.extraviado {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Order status styles */
+.products-table .status.pendente-pagamento {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.products-table .status.pago {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.products-table .status.enviado {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.products-table .status.entregue {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.products-table .status.cancelado {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.products-table strong {
+    color: #1e90ff;
+    font-weight: 600;
+}
+
+/* Responsivo para tabelas */
+@media (max-width: 768px) {
+    .products-table {
+        font-size: 12px;
+    }
+
+    .products-table th,
+    .products-table td {
+        padding: 10px 8px;
+    }
+
+    .products-table th {
+        font-size: 12px;
     }
 }

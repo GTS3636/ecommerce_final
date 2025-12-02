@@ -31,6 +31,14 @@ formAtualizar.addEventListener("submit", (e)=>{
         }
     }
     
+    // Filtra campos não preenchidos
+    Object.keys(valores).forEach((key) => {
+        if (valores[key] === "") {
+            delete valores[key];
+        }
+    })
+
+    
     fetch("http://localhost:3000/estoque/atualizar", {
         method: "PUT",
         headers: {

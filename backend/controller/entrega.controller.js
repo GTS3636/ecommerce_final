@@ -82,13 +82,14 @@ const atualizar = async (req, res) => {
     }
 
     try {
-        const entregaExist = await Entrega.findByPk(valores.codEntrega)
+        let entregaExist = await Entrega.findByPk(valores.codEntrega)
         if (!entregaExist) {
             return res.status(404).json({ error: "Não foi encontrada nenhuma entrega com o código informado!" })
         }
         // Atualizar registro de entrega
-        const dados = await Entrega.update(valores, { where: { codEntrega: valores.codEntrega } })
-        return res.status(201).json(dados)
+        await Entrega.update(valores, { where: { codEntrega: valores.codEntrega } })
+        entregaExist = await Entrega.findByPk(valores.codEntrega)
+        return res.status(201).json(entregaExist)
     } catch (err) {
         console.error('Erro ao atualizar a entrega:', err)
         return res.status(500).json({ error: 'Erro ao atualizar a entrega. Tente novamente mais tarde.' })

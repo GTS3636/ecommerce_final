@@ -2,8 +2,8 @@ const res = document.getElementById("res");
 const registrarForm = document.getElementById("registrarForm")
 
 // Função auxiliar para mostrar mensagens
-function mostrarMensagem(mensagem, tipo = "erro") {
-    res.style.color = tipo === "erro" ? "red" : "green"
+function mostrarMensagem(mensagem, tipo = "error") {
+    res.style.color = tipo === "error" ? "red" : "green"
     res.innerHTML = mensagem
 }
 

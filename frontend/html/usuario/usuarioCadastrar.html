@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Produto - Lojas Tijucanas</title>
+    <title>Cadastrar Usuário - Lojas Tijucanas</title>
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../../js/other/auth.js" defer></script>
-    <script src="../../js/produto/cadastrar.js" defer></script>
+    <script src="../../js/usuario/cadastrar.js" defer></script>
 </head>
+
 <body class="admin-page">
 
     <!-- Overlay -->
@@ -48,8 +50,10 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <a href="./produtoIndex.html" style="text-decoration: none; color: #333; border: 1px solid #333; padding: 5px;">Voltar</a>
-        <h1 style="margin-top: 0; text-align: center; color: #333;">Cadastrar Produto</h1><hr>
+        <a href="./usuarioIndex.html"
+            style="text-decoration: none; color: #333; border: 1px solid #333; padding: 5px;">Voltar</a>
+        <h1 style="margin-top: 0; text-align: center; color: #333;">Cadastrar Usuário</h1>
+        <hr>
         <form id="cadastrarForm">
             <div class="form-row">
                 <div class="input-group">
@@ -57,38 +61,40 @@
                     <input type="text" id="nome" name="nome" required>
                 </div>
                 <div class="input-group">
-                    <label for="preco">Preço:</label>
-                    <input type="number" id="preco" name="preco" step="0.01" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
                 </div>
-            </div><hr>
+            </div>
+            <hr>
             <div class="form-row">
                 <div class="input-group">
-                    <label for="imagem_url">URL da Imagem:</label>
-                    <input type="text" id="imagem_url" name="imagem_url">
+                    <label for="senha">Senha:</label>
+                    <input type="password" id="senha" name="senha" required>
                 </div>
                 <div class="input-group">
-                    <label for="ativo">Ativo?</label>
-                    <input type="checkbox" id="ativo" name="ativo">
+                    <label for="telefone">Telefone:</label>
+                    <input type="text" id="telefone" name="telefone">
                 </div>
-                <div class="input-group">
-                    <label for="categoria">Categoria:</label>
-                    <input type="text" id="categoria" name="categoria" required>
-                </div>
-            </div><hr>
+            </div>
+            <hr>
             <div class="form-row">
                 <div class="input-group">
-                    <label for="descricao">Descrição (opcional):</label>
-                    <textarea id="descricao" name="descricao"></textarea>
+                    <label for="cpf">CPF:</label>
+                    <input type="text" id="cpf" name="cpf">
                 </div>
                 <div class="input-group">
-                    <label for="quantidade_minima">Quantidade Mínima:</label>
-                    <input type="number" id="quantidade_minima" name="quantidade_minima" required>
+                    <label for="identidade">Identidade:</label>
+                    <input type="text" id="identidade" name="identidade">
                 </div>
                 <div class="input-group">
-                    <label for="especificacoes">Especificações (JSON):</label>
-                    <textarea id="especificacoes" name="especificacoes">{"key": "value"}</textarea>
+                    <label for="tipo_usuario">Tipo de Usuário:</label>
+                    <select id="tipo_usuario" name="tipo_usuario">
+                        <option value="CLIENTE">Cliente</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
                 </div>
-            </div><hr>
+            </div>
+            <hr>
             <button type="submit" class="btnFunction">Cadastrar</button>
             <div id="res"></div>
         </form>
@@ -108,4 +114,5 @@
         </button>
     </footer>
 </body>
+
 </html>
