@@ -1,19 +1,41 @@
 // frontend/checkout.js - Script para páginas index.html e checkout.html
 
+// ================================
+// CONFIGURAÇÃO DE CAMINHOS
+// ================================
+
+// Detectar caminho base dinamicamente
+const getBasePath = () => {
+    const path = window.location.pathname;
+    // Se estiver em uma subpasta, ajusta o caminho
+    if (path.includes('/frontend/')) {
+        return '../';
+    }
+    return './';
+};
+
 // Detectar em qual página estamos
-const getCurrentPage = () => window.location.pathname.split('/').pop();
+const getCurrentPage = () => {
+    const path = window.location.pathname;
+    const page = path.split('/').pop();
+    return page || 'index.html';
+};
+
 const isIndexPage = () => {
     const page = getCurrentPage();
     return page === 'index.html' || page === '' || page === '/';
 };
+
 const isCheckoutPage = () => getCurrentPage() === 'checkout.html';
 
-// Estado da aplicação
+// ================================
+// ESTADO DA APLICAÇÃO
+// ================================
+
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let allProducts = [];
 let productsGrid = null;
-
-let SHIPPING_COST
+let SHIPPING_COST;
 
 // ================================
 // FUNÇÕES COMPARTILHADAS (ambas as páginas)
@@ -126,7 +148,7 @@ function showNotification(message, type = 'info') {
 }
 
 // ================================
-// FUNCÇÕES ESPECÍFICAS DA PÁGINA INDEX.HTML
+// FUNÇÕES ESPECÍFICAS DA PÁGINA INDEX.HTML
 // ================================
 
 if (isIndexPage()) {
@@ -215,7 +237,7 @@ if (isIndexPage()) {
     }
 
     // Ver detalhes do produto
-    function viewProductDetails(productId) {
+    window.viewProductDetails = function(productId) {
         const product = allProducts.find(p => p.codProduto === productId);
 
         if (!product) {
@@ -281,7 +303,7 @@ if (isIndexPage()) {
     }
 
     // Fechar modal de detalhes
-    function closeProductModal() {
+    window.closeProductModal = function() {
         const modal = document.querySelector('.product-modal');
         if (modal) {
             modal.classList.remove('active');
@@ -321,34 +343,34 @@ if (isIndexPage()) {
         if (cartBtn) {
             cartBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                window.location.href = 'checkout.html';
+                window.location.href = './frontend/checkout.html';
+            });
+        }
+
+        // Event Listeners para busca
+        const searchBtn = document.querySelector('.search-btn');
+        const searchInput = document.querySelector('.search-input');
+
+        if (searchBtn && searchInput) {
+            searchBtn.addEventListener('click', searchProducts);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchProducts();
+                }
             });
         }
     });
 
-    // Event Listeners para busca
-    const searchBtn = document.querySelector('.search-btn');
-    const searchInput = document.querySelector('.search-input');
-
-    if (searchBtn && searchInput) {
-        searchBtn.addEventListener('click', searchProducts);
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                searchProducts();
-            }
-        });
-    }
-
     // Prevenir que ESC feche modal se não houver modal ativo
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            closeProductModal();
+            window.closeProductModal();
         }
     });
 }
 
 // ================================
-// FUNCÕES ESPECÍFICAS DA PÁGINA CHECKOUT.HTML
+// FUNÇÕES ESPECÍFICAS DA PÁGINA CHECKOUT.HTML
 // ================================
 
 if (isCheckoutPage()) {
@@ -375,37 +397,63 @@ if (isCheckoutPage()) {
         // Carregar e renderizar carrinho
         loadCart();
         updateCartBadge();
+
+        // Adicionar listener ao botão de calcular frete
+        const calcularFrete = document.getElementById("calcularFrete");
+        if (calcularFrete) {
+            calcularFrete.addEventListener("click", calcularFreteHandler);
+        }
+
+        // Adicionar listeners aos botões de finalizar e limpar
+        const btnFinalizar = document.querySelector('.btn-finalizar');
+        const btnLimpar = document.querySelector('.btn-limpar');
+
+        if (btnFinalizar) {
+            btnFinalizar.addEventListener('click', finalizarCompra);
+        }
+
+        if (btnLimpar) {
+            btnLimpar.addEventListener('click', limparCarrinho);
+        }
     }
 
-    let calcularFrete = document.getElementById("calcularFrete")
+    // Handler para calcular frete
+    async function calcularFreteHandler(e) {
+        e.preventDefault();
+        let cep = document.getElementById("cep").value;
 
-    calcularFrete.addEventListener("click", async (e) => {
-        e.preventDefault(e)
-        let cep = document.getElementById("cep").value
-
-        if (!cep || cep == "") {
-            return alert("É necessário informar um CEP!")
+        if (!cep || cep === "") {
+            return alert("É necessário informar um CEP!");
         }
 
-        const responseCep = await fetch(`https://viacep.com.br/ws/${cep}/json/`, { headers: { 'Authorization': `Bearer ${token}` } })
-        const dataCep = await responseCep.json()
+        try {
+            const responseCep = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const dataCep = await responseCep.json();
 
-        if (dataCep.erro) {
-            return res.status(400).json({ error: "O CEP informado é inválido." })
+            if (dataCep.erro) {
+                return alert("O CEP informado é inválido.");
+            }
+
+            let valores = {
+                uf: dataCep.uf
+            };
+
+            const response = await fetch("http://localhost:3000/entrega/frete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(valores)
+            });
+
+            const data = await response.json();
+
+            SHIPPING_COST = data.valorFrete;
+            updateOrderSummary();
+            showNotification('Frete calculado com sucesso!', 'success');
+        } catch (error) {
+            console.error('Erro ao calcular frete:', error);
+            showNotification('Erro ao calcular frete. Tente novamente.', 'error');
         }
-
-        let valores = {
-            uf: dataCep.uf
-        }
-        const response = await fetch("http://localhost:3000/entrega/frete", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(valores)
-        })
-        const data = await response.json()
-
-        SHIPPING_COST = data.valorFrete
-        updateOrderSummary()
-    })
+    }
 
     // Carregar carrinho do localStorage
     function loadCart() {
@@ -452,12 +500,12 @@ if (isCheckoutPage()) {
                 <div class="cart-item-quantity">
                     <label>Quantidade:</label>
                     <div class="quantity-controls">
-                        <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})">
+                        <button class="btn-quantity-decrease" data-product-id="${item.id}">
                             <i class="fas fa-minus"></i>
                         </button>
                         <input type="number" value="${item.quantity}" min="1" 
-                               onchange="updateQuantity(${item.id}, this.value)" />
-                        <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">
+                               class="quantity-input" data-product-id="${item.id}" />
+                        <button class="btn-quantity-increase" data-product-id="${item.id}">
                             <i class="fas fa-plus"></i>
                         </button>
                     </div>
@@ -469,12 +517,59 @@ if (isCheckoutPage()) {
                 </div>
                 
                 <div class="cart-item-remove">
-                    <button onclick="removeFromCart(${item.id})" title="Remover produto">
+                    <button class="btn-remove-item" data-product-id="${item.id}" title="Remover produto">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </div>
         `).join('');
+
+        // Adicionar event listeners aos botões
+        addCartItemListeners();
+    }
+
+    // Adicionar event listeners aos itens do carrinho
+    function addCartItemListeners() {
+        // Botões de diminuir quantidade
+        document.querySelectorAll('.btn-quantity-decrease').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = parseInt(this.dataset.productId);
+                const product = cart.find(item => item.id === productId);
+                if (product) {
+                    updateQuantity(productId, product.quantity - 1);
+                }
+            });
+        });
+
+        // Botões de aumentar quantidade
+        document.querySelectorAll('.btn-quantity-increase').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = parseInt(this.dataset.productId);
+                const product = cart.find(item => item.id === productId);
+                if (product) {
+                    updateQuantity(productId, product.quantity + 1);
+                }
+            });
+        });
+
+        // Inputs de quantidade
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const productId = parseInt(this.dataset.productId);
+                const newQuantity = parseInt(this.value);
+                if (newQuantity > 0) {
+                    updateQuantity(productId, newQuantity);
+                }
+            });
+        });
+
+        // Botões de remover
+        document.querySelectorAll('.btn-remove-item').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = parseInt(this.dataset.productId);
+                removeFromCart(productId);
+            });
+        });
     }
 
     // Atualizar quantidade de um produto
@@ -532,7 +627,7 @@ if (isCheckoutPage()) {
             const shipping = SHIPPING_COST;
 
             if (typeof shipping !== "number") {
-                const total = subtotal
+                const total = subtotal;
                 totalElement.textContent = `R$ ${formatPrice(total)}`;
                 shippingElement.textContent = "Digite o seu CEP";
             } else {
@@ -553,10 +648,10 @@ if (isCheckoutPage()) {
 
     // Finalizar compra
     function finalizarCompra() {
-        let cep = document.getElementById("cep").value
+        let cep = document.getElementById("cep").value;
 
-        if (!cep || cep == "") {
-            return alert("É necessário informar um CEP para a entrega do pedido!")
+        if (!cep || cep === "") {
+            return alert("É necessário informar um CEP para a entrega do pedido!");
         }
 
         if (cart.length === 0) {
@@ -573,12 +668,17 @@ if (isCheckoutPage()) {
             return;
         }
 
+        if (typeof SHIPPING_COST !== 'number') {
+            showNotification('Por favor, calcule o frete antes de finalizar!', 'error');
+            return;
+        }
+
         const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const total = subtotal + SHIPPING_COST;
 
         if (confirm(`Confirmar pedido?\n\nTotal: R$ ${formatPrice(total)}\n\nVocê será redirecionado para a página de pedidos.`)) {
             // Chamar API para criar pedido
-            criarPedido(subtotal, total, cep)
+            criarPedido(subtotal, total, cep);
         }
     }
 
@@ -586,8 +686,6 @@ if (isCheckoutPage()) {
     async function criarPedido(subtotal, total, cep) {
         try {
             // Preparar dados do pedido
-            console.log(cart);
-            
             const itens = cart.map(item => ({
                 codProduto: item.id,
                 quantidade: item.quantity,
@@ -595,7 +693,7 @@ if (isCheckoutPage()) {
                 valorTotalItem: item.price * item.quantity
             }));
 
-            const idUsuario = localStorage.getItem("idUsuario")
+            const idUsuario = localStorage.getItem("idUsuario");
 
             const pedidoData = {
                 itens: itens,
@@ -605,6 +703,11 @@ if (isCheckoutPage()) {
                 idUsuario: idUsuario,
                 cep: cep
             };
+
+            // Log para debug
+            console.log('Dados do pedido sendo enviados:', pedidoData);
+            console.log('Número de itens:', itens.length);
+            console.log('Itens detalhados:', itens);
 
             const response = await fetch('http://localhost:3000/pedido/cadastrar', {
                 method: 'POST',
@@ -657,30 +760,4 @@ if (isCheckoutPage()) {
             showNotification('Carrinho limpo com sucesso!', 'success');
         }
     }
-
-    // Event listeners para inputs de quantidade
-    document.addEventListener('change', (e) => {
-        if (e.target.type === 'number' && e.target.closest('.quantity-controls')) {
-            const cartItem = e.target.closest('.cart-item');
-            const productId = parseInt(cartItem.dataset.productId);
-            updateQuantityOnBlur(productId, e.target);
-        }
-    });
-
-    // Event listeners para botões de quantidade
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.quantity-controls button')) {
-            const button = e.target.closest('button');
-            const input = button.parentElement.querySelector('input');
-            const cartItem = button.closest('.cart-item');
-            const productId = parseInt(cartItem.dataset.productId);
-            const currentValue = parseInt(input.value);
-            const newValue = button.querySelector('.fa-minus') ? currentValue - 1 : currentValue + 1;
-
-            if (newValue >= 1) {
-                input.value = newValue;
-                updateQuantity(productId, newValue);
-            }
-        }
-    });
 }

@@ -39,7 +39,7 @@ loginForm.addEventListener("submit", (e)=>{
         res.style.color = "green"
         res.innerHTML = `<h3>Login efetuado com sucesso!</h3>`
         setTimeout(()=>{
-            location.href = "./index.html"
+            location.href = "../index.html"
         },2000)
     })
     .catch((err)=>{

@@ -31,7 +31,7 @@ formAtualizar.addEventListener("submit", (e)=>{
         }
     }
     
-    fetch("http://localhost:4000/estoque/atualizar", {
+    fetch("http://localhost:3000/estoque/atualizar", {
         method: "PUT",
         headers: {
             'Authorization': `Bearer ${token}`,

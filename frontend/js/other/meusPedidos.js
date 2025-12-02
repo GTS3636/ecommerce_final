@@ -1,272 +1,376 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Verificar se usuário está logado
-    if (!token) {
-        alert('Você precisa estar logado para acessar seus pedidos!');
-        window.location.href = 'login.html';
+// meusPedidos.js - Versão Corrigida
+
+const API_BASE_URL = 'http://localhost:3000'; // Ajuste conforme sua API
+
+// Carrega os pedidos quando a página é carregada
+document.addEventListener('DOMContentLoaded', async () => {
+    await carregarPedidos();
+});
+
+// Função para buscar pedidos do usuário
+async function carregarPedidos() {
+    const userId = localStorage.getItem('idUsuario');
+
+    if (!userId) {
+        mostrarMensagemSemPedidos();
         return;
     }
 
-    // Carregar pedidos do usuário
-    carregarPedidosUsuario();
-
-    // Botão "ver detalhes"
-    document.addEventListener("click", (e) => {
-        if (e.target.closest(".btn-view-order")) {
-            const btn = e.target.closest(".btn-view-order");
-            const id = btn.dataset.pedidoId;
-            verDetalhes(id);
-        }
-    });
-
-    // Botão "rastrear pedido"
-    document.addEventListener("click", (e) => {
-        if (e.target.closest(".btn-track-compact")) {
-            const btn = e.target.closest(".btn-track-compact");
-            const id = btn.dataset.pedidoId;
-            rastrearPedido(id);
-        }
-    });
-});
-
-// Carregar pedidos do usuário logado
-async function carregarPedidosUsuario() {
     try {
-        const response = await fetch('http://localhost:3000/pedido/listar', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        // Busca os pedidos do usuário
+        const response = await fetch(`${API_BASE_URL}/pedido/listar/`, { headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" } });
 
         if (!response.ok) {
             throw new Error('Erro ao carregar pedidos');
         }
 
-        const pedidos = await response.json();
+        const result = await response.json()
 
-        const ordersContent = document.getElementById("ordersContent");
+        const pedidos = result.filter(pedido => pedido.idUsuario == userId)
 
         if (!pedidos || pedidos.length === 0) {
-            ordersContent.innerHTML = `
-                <div class="empty-orders" style="grid-column: 1 / -1; text-align: center; padding: 40px; margin-top: 20px;">
-                    <i class="fas fa-shopping-bag" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
-                    <h2>Você ainda não fez nenhum pedido</h2>
-                    <p>Explore nossa loja e encontre produtos incríveis!</p>
-                    <a href="./index.html" class="btn-shop" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">
-                        <i class="fas fa-shopping-cart"></i> Começar a Comprar
-                    </a>
-                </div>
-            `;
+            mostrarMensagemSemPedidos();
             return;
         }
 
-        // Renderizar pedidos
-        ordersContent.innerHTML = pedidos.map(pedido => `
-            <div class="order-card-compact">
-                <div class="order-card-header">
-                    <div class="order-info-compact">
-                        <span class="order-number-compact">#${pedido.codPedido}</span>
-                        <span class="order-date-compact">${new Date(pedido.dataPedido).toLocaleDateString('pt-BR')}</span>
-                    </div>
-                    <span class="order-status status-${mapearStatusCss(pedido.status)}">
-                        ${getStatusIcon(pedido.status)} ${mapearStatusTexto(pedido.status)}
-                    </span>
-                </div>
-                <div class="order-card-body">
-                    <div class="order-summary-compact">
-                        <div class="summary-item">
-                            <i class="fas fa-box"></i>
-                            <span>${pedido.itens ? pedido.itens.length : 0} itens</span>
-                        </div>
-                        <div class="summary-item">
-                            <i class="fas fa-dollar-sign"></i>
-                            <span class="total-value">R$ ${parseFloat(pedido.valorTotal).toFixed(2).replace('.', ',')}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="order-card-footer">
-                    <button class="btn-view-order" data-pedido-id="${pedido.codPedido}">
-                        <i class="fas fa-eye"></i> Ver Detalhes
-                    </button>
-                </div>
-            </div>
-        `).join('');
+        // Para cada pedido, busca os itens
+        const pedidosComItens = await Promise.all(
+            pedidos.map(async (pedido) => {
+                try {
+                    // Busca os itens do pedido
+                    const response = await fetch(`${API_BASE_URL}/itemPedido/listar`, { headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" } });
+                    const responseData = await response.json()
+                    const itensResponse = responseData.filter(item => item.idPedido == pedido.codPedido);
+
+                    if (itensResponse) {
+                        const itens = itensResponse
+                        pedido.itens = itens || []
+                        console.log("Pedido itens: ", pedido.itens)
+                        console.log("Itens: ", itens)
+                    } else {
+                        pedido.itens = []
+                    }
+                } catch (error) {
+                    console.error(`Erro ao carregar itens do pedido ${pedido.codPedido}:`, error);
+                    pedido.itens = [];
+                }
+                return pedido;
+            })
+        );
+
+        renderizarPedidos(pedidosComItens);
 
     } catch (error) {
         console.error('Erro ao carregar pedidos:', error);
-        const ordersContent = document.getElementById("ordersContent");
-        ordersContent.innerHTML = `
-            <div style="grid-column: 1 / -1; color: red; text-align: center; padding: 40px;">
-                <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 20px;"></i>
-                <p>Erro ao carregar seus pedidos. Tente novamente mais tarde.</p>
-            </div>
-        `;
+        mostrarErro('Não foi possível carregar seus pedidos. Tente novamente mais tarde.');
     }
 }
 
-// Mapear status para classe CSS
-function mapearStatusCss(status) {
-    const mapa = {
-        'PENDENTE_PAGAMENTO': 'pendente',
-        'PAGO': 'pago',
-        'ENVIADO': 'enviado',
-        'ENTREGUE': 'entregue',
-        'CANCELADO': 'cancelado'
-    };
-    return mapa[status] || 'pendente';
+// Renderiza os cards dos pedidos
+function renderizarPedidos(pedidos) {
+    const ordersContent = document.getElementById('ordersContent');
+    ordersContent.innerHTML = '';
+
+    pedidos.forEach(pedido => {
+        const card = criarCardPedido(pedido);
+        ordersContent.appendChild(card);
+    });
 }
 
-// Mapear status para texto amigável
-function mapearStatusTexto(status) {
-    const mapa = {
-        'PENDENTE_PAGAMENTO': 'Pendente de Pagamento',
-        'PAGO': 'Pago',
-        'ENVIADO': 'Em Trânsito',
-        'ENTREGUE': 'Entregue',
-        'CANCELADO': 'Cancelado'
-    };
-    return mapa[status] || status;
+// Cria o card de um pedido
+function criarCardPedido(pedido) {
+    console.log("Pedido: ", pedido);
+
+    const card = document.createElement('div');
+    card.className = 'order-card-compact';
+
+    // Calcula o total de itens
+    const totalItens = pedido.itens.reduce((total, item) => {
+        return total + (item.quantidade || 1);
+    }, 0);
+
+    console.log(totalItens);
+
+
+    // Formata a data
+    const dataFormatada = formatarData(pedido.dataPedido || pedido.data);
+
+    // Define o status
+    const statusInfo = obterStatusInfo(pedido.status);
+
+    // Cria preview das imagens (máximo 2 imagens + contador)
+    const previewImagens = criarPreviewImagens(pedido.itens);
+
+    card.innerHTML = `
+        <div class="order-card-header">
+            <div class="order-info-compact">
+                <span class="order-number-compact">#${pedido.codPedido}</span>
+                <span class="order-date-compact">${dataFormatada}</span>
+            </div>
+            <span class="order-status ${statusInfo.classe}">
+                <i class="${statusInfo.icone}"></i> ${statusInfo.texto}
+            </span>
+        </div>
+        <div class="order-card-body">
+            <div class="order-preview-items">
+                ${previewImagens}
+            </div>
+            <div class="order-summary-compact">
+                <div class="summary-item">
+                    <i class="fas fa-box"></i>
+                    <span>${totalItens} ${totalItens === 1 ? 'item' : 'itens'}</span>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span class="total-value">R$ ${formatarValor(pedido.valorTotal)}</span>
+                </div>
+            </div>
+        </div>
+        <div class="order-card-footer">
+            <button class="btn-view-order" onclick="abrirModal(${pedido.codPedido})">
+                <i class="fas fa-eye"></i> Ver Detalhes
+            </button>
+            ${pedido.status === 'PROCESSANDO' || pedido.status === 'CONFIRMADO' ?
+            `<button class="btn-cancel-compact" onclick="cancelarPedido(${pedido.codPedido})">
+                    <i class="fas fa-times"></i>
+                </button>` :
+            `<button class="btn-track-compact" onclick="rastrearPedido(${pedido.codPedido})">
+                    <i class="fas fa-map-marker-alt"></i>
+                </button>`
+        }
+        </div>
+    `;
+
+    return card;
 }
 
-// Retornar ícone apropriado para status
-function getStatusIcon(status) {
-    const icones = {
-        'PENDENTE_PAGAMENTO': '<i class="fas fa-clock"></i>',
-        'PAGO': '<i class="fas fa-check-circle"></i>',
-        'ENVIADO': '<i class="fas fa-shipping-fast"></i>',
-        'ENTREGUE': '<i class="fas fa-box"></i>',
-        'CANCELADO': '<i class="fas fa-times-circle"></i>'
-    };
-    return icones[status] || '<i class="fas fa-question-circle"></i>';
+// Cria o preview das imagens dos produtos
+function criarPreviewImagens(itens) {
+    if (!itens || itens.length === 0) {
+        return '<div class="preview-image no-image"><i class="fas fa-image"></i></div>';
+    }
+
+    let html = '';
+    const maxImagens = 2;
+
+    // Mostra no máximo 2 imagens
+    for (let i = 0; i < Math.min(itens.length, maxImagens); i++) {
+        const item = itens[i];
+        const imagemUrl = item.produto?.imagem || item.imagem || '';
+
+        if (imagemUrl) {
+            html += `<img src="${imagemUrl}" alt="Produto" class="preview-image">`;
+        } else {
+            html += '<div class="preview-image no-image"><i class="fas fa-box"></i></div>';
+        }
+    }
+
+    // Se houver mais itens, mostra contador
+    if (itens.length > maxImagens) {
+        html += `<div class="more-items">+${itens.length - maxImagens}</div>`;
+    }
+
+    return html;
 }
 
-/* ---------------------------------------------------
-   Função VER DETALHES
-----------------------------------------------------*/
-async function verDetalhes(pedidoId) {
+// Formata a data para dd/mm/yyyy
+function formatarData(data) {
+    if (!data) return 'Data não disponível';
+
+    const date = new Date(data);
+    const dia = String(date.getDate()).padStart(2, '0');
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+    const ano = date.getFullYear();
+
+    return `${dia}/${mes}/${ano}`;
+}
+
+// Formata valor monetário
+function formatarValor(valor) {
+    if (!valor) return '0,00';
+    return parseFloat(valor).toFixed(2).replace('.', ',');
+}
+
+// Retorna informações de estilo baseado no status
+function obterStatusInfo(status) {
+    const statusMap = {
+        'CONFIRMADO': { classe: 'status-confirmado', icone: 'fas fa-check-circle', texto: 'Confirmado' },
+        'PROCESSANDO': { classe: 'status-processando', icone: 'fas fa-cog', texto: 'Processando' },
+        'ENVIADO': { classe: 'status-enviado', icone: 'fas fa-shipping-fast', texto: 'Em Trânsito' },
+        'ENTREGUE': { classe: 'status-entregue', icone: 'fas fa-check-double', texto: 'Entregue' },
+        'CANCELADO': { classe: 'status-cancelado', icone: 'fas fa-times-circle', texto: 'Cancelado' }
+    };
+
+    return statusMap[status] || { classe: 'status-processando', icone: 'fas fa-question', texto: status };
+}
+
+// Abre o modal com detalhes do pedido
+async function abrirModal(pedidoId) {
     try {
-        const response = await fetch(`http://localhost:3000/pedido/consultar/${pedidoId}`, {
-            method: 'GET',
+        // Buscar dados do pedido
+        const response = await fetch(`${API_BASE_URL}/pedido/consultar/${pedidoId}`, {
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
             }
         });
 
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar pedido #${pedidoId}`);
-        }
+        if (!response.ok) throw new Error('Erro ao buscar detalhes');
 
         const pedido = await response.json();
-        preencherDetalhesModal(pedido);
-        abrirModal();
 
-    } catch (erro) {
-        console.error(erro);
-        alert("Erro ao carregar os detalhes do pedido.");
+        // Buscar itens do pedido
+        const itensResponse = await fetch(`${API_BASE_URL}/itemPedido/listar`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (itensResponse.ok) {
+            const itens = await itensResponse.json()
+            console.log("ITEMS DA API:", itens);
+
+            pedido.itens = itens.filter(item => item.idPedido == pedido.codPedido);
+        }
+        
+
+        renderizarModal(pedido);
+
+        // Mostrar modal
+        const modal = document.getElementById('orderModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+    } catch (error) {
+        console.error('Erro ao abrir modal:', error);
+        alert('Não foi possível carregar os detalhes do pedido.');
     }
 }
 
-// Rastrear pedido
-function rastrearPedido(pedidoId) {
-    alert(`Funcionalidade de rastreamento em desenvolvimento para o pedido #${pedidoId}`);
-}
+// Renderiza o conteúdo do modal
+function renderizarModal(pedido) {
+    const modalBody = document.getElementById('orderModalBody')
+    console.log(modalBody);
 
-/* ---------------------------------------------------
-   Funções auxiliares do modal
-----------------------------------------------------*/
-function abrirModal() {
-    const modal = document.getElementById("orderModal");
-    if (modal) {
-        modal.classList.add("active");
-    }
-}
+    const statusInfo = obterStatusInfo(pedido.status);
+    const dataFormatada = formatarData(pedido.dataPedido || pedido.data);
 
-function fecharModal() {
-    const modal = document.getElementById("orderModal");
-    if (modal) {
-        modal.classList.remove("active");
-    }
-}
-
-// Preencher modal com detalhes do pedido
-function preencherDetalhesModal(pedido) {
-    const modalBody = document.getElementById("orderModalBody");
-
-    if (!modalBody) return;
-
-    const itensHtml = pedido.itens && pedido.itens.length > 0
-        ? pedido.itens.map(item => `
+    let itensHtml = '';
+    if (pedido.itens && pedido.itens.length > 0) {
+        itensHtml = pedido.itens.map(item => `
             <div class="item-row">
                 <div class="item-info">
-                    ${item.Produto && item.Produto.imagem_url
-                ? `<img src="${item.Produto.imagem_url}" class="item-image" alt="${item.Produto.nome}">`
-                : `<div class="no-image"><i class="fas fa-image"></i></div>`
-            }
+                    <img src="${item.produto?.imagem || ''}" alt="Produto" class="item-image" 
+                         onerror="this.src=''">
                     <div class="item-details">
-                        <h4>${item.Produto ? item.Produto.nome : 'Produto'}</h4>
+                        <h4>${item.produto?.nome || item.nomeProduto || 'Produto'}</h4>
                         <p>Quantidade: ${item.quantidade}</p>
                     </div>
                 </div>
-                <div class="item-price">R$ ${parseFloat(item.valorTotalItem).toFixed(2).replace('.', ',')}</div>
+                <div class="item-price">R$ ${formatarValor(item.precoUnitario * item.quantidade)}</div>
             </div>
-        `).join("")
-        : '<p>Nenhum item no pedido</p>';
-
-    const dataFormatada = new Date(pedido.dataPedido).toLocaleString("pt-BR");
+        `).join('');
+    }
 
     modalBody.innerHTML = `
         <div class="order-detail-header">
             <h2>Pedido #${pedido.codPedido}</h2>
-            <span class="order-status status-${mapearStatusCss(pedido.status)}">
-                ${getStatusIcon(pedido.status)} ${mapearStatusTexto(pedido.status)}
+            <span class="order-status ${statusInfo.classe}">
+                <i class="${statusInfo.icone}"></i> ${statusInfo.texto}
             </span>
         </div>
+        <p class="order-detail-date">Realizado em ${dataFormatada}</p>
 
-        <p class="order-detail-date">
-            Realizado em ${dataFormatada}
-        </p>
-
-        <div class="order-timeline">
-            <div class="timeline-item ${['PAGO', 'ENVIADO', 'ENTREGUE'].includes(pedido.status) ? 'active' : ''}">
-                <div class="timeline-content">
-                    <h4><i class="fas fa-check-circle"></i> Pedido Confirmado</h4>
-                </div>
-            </div>
-            <div class="timeline-item ${['ENVIADO', 'ENTREGUE'].includes(pedido.status) ? 'active' : ''}">
-                <div class="timeline-content">
-                    <h4><i class="fas fa-truck"></i> Enviado</h4>
-                </div>
-            </div>
-            <div class="timeline-item ${pedido.status === 'ENTREGUE' ? 'active' : ''}">
-                <div class="timeline-content">
-                    <h4><i class="fas fa-home"></i> Entregue</h4>
-                </div>
-            </div>
+        <div class="order-items">
+            <h3><i class="fas fa-list"></i> Itens do Pedido</h3>
+            ${itensHtml || '<p>Nenhum item encontrado</p>'}
         </div>
 
-        <h3><i class="fas fa-list"></i> Itens do Pedido</h3>
-        ${itensHtml}
-
         <div class="order-total">
-            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
-                <span>Subtotal:</span>
-                <span>R$ ${parseFloat(pedido.valorSubtotal).toFixed(2).replace('.', ',')}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
-                <span>Frete:</span>
-                <span>R$ ${parseFloat(pedido.valorFrete).toFixed(2).replace('.', ',')}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin: 10px 0; font-weight: bold; font-size: 18px;">
-                <span>Total do Pedido</span>
-                <span>R$ ${parseFloat(pedido.valorTotal).toFixed(2).replace('.', ',')}</span>
-            </div>
+            <span>Total do Pedido</span>
+            <span>R$ ${formatarValor(pedido.valorTotal)}</span>
         </div>
 
         <div class="order-actions">
-            <button class="btn-action btn-track" onclick="rastrearPedido(${pedido.codPedido})">
-                <i class="fas fa-map-marker-alt"></i> Rastrear Pedido
+            ${pedido.status === 'ENVIADO' ?
+            `<button class="btn-action btn-track" onclick="rastrearPedido(${pedido.codPedido})">
+                    <i class="fas fa-map-marker-alt"></i> Rastrear Pedido
+                </button>` : ''
+        }
+            ${pedido.status === 'PROCESSANDO' || pedido.status === 'CONFIRMADO' ?
+            `<button class="btn-action btn-cancel" onclick="cancelarPedido(${pedido.codPedido})">
+                    <i class="fas fa-times-circle"></i> Cancelar Pedido
+                </button>` : ''
+        }
+        </div>
+    `;
+}
+
+// Fecha o modal
+function fecharModal() {
+    const modal = document.getElementById('orderModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+// Rastrear pedido
+function rastrearPedido(pedidoId) {
+    alert(`Funcionalidade de rastreamento do pedido #${pedidoId} será implementada em breve.`);
+}
+
+// Cancelar pedido
+async function cancelarPedido(pedidoId) {
+    if (!confirm('Tem certeza que deseja cancelar este pedido?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/pedidos/${pedidoId}/cancelar`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            alert('Pedido cancelado com sucesso!');
+            await carregarPedidos(); // Recarrega a lista
+            fecharModal();
+        } else {
+            throw new Error('Erro ao cancelar pedido');
+        }
+    } catch (error) {
+        console.error('Erro ao cancelar pedido:', error);
+        alert('Não foi possível cancelar o pedido. Tente novamente.');
+    }
+}
+
+// Mostra mensagem quando não há pedidos
+function mostrarMensagemSemPedidos() {
+    const ordersContent = document.getElementById('ordersContent');
+    ordersContent.innerHTML = `
+        <div class="empty-orders">
+            <i class="fas fa-shopping-bag"></i>
+            <h2>Você ainda não fez nenhum pedido</h2>
+            <p>Explore nossa loja e encontre produtos incríveis!</p>
+            <a href="./index.html" class="btn-shop">
+                <i class="fas fa-shopping-cart"></i> Começar a Comprar
+            </a>
+        </div>
+    `;
+}
+
+// Mostra mensagem de erro
+function mostrarErro(mensagem) {
+    const ordersContent = document.getElementById('ordersContent');
+    ordersContent.innerHTML = `
+        <div class="empty-orders">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h2>Ops! Algo deu errado</h2>
+            <p>${mensagem}</p>
+            <button onclick="carregarPedidos()" class="btn-shop">
+                <i class="fas fa-redo"></i> Tentar Novamente
             </button>
         </div>
     `;

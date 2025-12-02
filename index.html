@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lojas Tijucanas</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./frontend/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="./js/other/auth.js" defer></script>
-    <script src="./js/other/checkout.js" defer></script>
+    <script src="./frontend/js/other/auth.js" defer></script>
+    <script src="./frontend/js/other/checkout.js" defer></script>
 </head>
 <body>
     <!-- Sidebar Menu -->
@@ -33,6 +33,9 @@
             </a>
             <a href="./frontend/html/pedido/pedidoIndex.html" class="sidebar-link">
                 <i class="fas fa-shopping-bag"></i> Pedidos
+            </a>
+            <a href="./frontend/html/item_pedido/itemPedidoIndex.html" class="sidebar-link">
+                <i class="fas fa-list"></i> Itens de Pedido
             </a>
         </nav>
     </div>
@@ -68,10 +71,10 @@
                 <span id="cartCount">0</span> itens
             </div>
             <button class="header-btn" id="loginUser">
-                <i class="fas fa-arrow-right-to-bracket"></i> <a href="./login.html">Login</a>
+                <i class="fas fa-arrow-right-to-bracket"></i> <a href="./frontend/login.html">Login</a>
             </button>
             <button class="header-btn" id="registerUser">
-                <i class="fas fa-user-plus"></i> <a href="./register.html">Sign Up</a>
+                <i class="fas fa-user-plus"></i> <a href="./frontend/register.html">Sign Up</a>
             </button>
         </div>
     </header>
